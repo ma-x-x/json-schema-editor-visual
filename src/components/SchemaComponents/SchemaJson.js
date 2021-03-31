@@ -8,8 +8,6 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-
-import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 
 import {
@@ -19,9 +17,7 @@ import {
   Col,
   Select,
   Checkbox,
-  Button,
   Input,
-  Modal,
   message,
   Tooltip,
 } from 'antd';
@@ -34,11 +30,7 @@ import LocaleProvider from '../LocalProvider/index.js';
 import MockSelect from '../MockSelect/index.js';
 const utils = require('../../utils');
 
-const FormItem = Form.Item;
 const Option = Select.Option;
-const { TextArea } = Input;
-
-const InputGroup = Input.Group;
 
 const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
   let newUiPrefixMap = utils.cloneObject(uiPrefixMap);
@@ -309,7 +301,7 @@ class SchemaItem extends PureComponent {
   }
   componentWillMount() {
     const { prefix } = this.props;
-    let length = prefix.filter(name => name != 'properties').length;
+    let length = prefix.filter(name => name !== 'properties').length;
     this.__tagPaddingLeftStyle = {
       paddingLeft: `${20 * (length + 1)}px`
     };
@@ -483,7 +475,7 @@ class SchemaItem extends PureComponent {
                       <Checkbox
                         onChange={this.handleEnableRequire}
                         checked={
-                          _.isUndefined(data.required) ? false : data.required.indexOf(name) != -1
+                          _.isUndefined(data.required) ? false : data.required.indexOf(name) !== -1
                         }
                       />
                     </Tooltip>
@@ -574,7 +566,6 @@ class SchemaItem extends PureComponent {
               })}
             </Select>
           </Col>
-
 
           <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
             <span className="adv-set" onClick={this.handleShowAdv}>

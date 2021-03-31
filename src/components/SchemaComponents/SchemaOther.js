@@ -1,29 +1,21 @@
 import React, { PureComponent } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 import {
-  Dropdown,
-  Menu,
   Input,
   InputNumber,
   Row,
   Col,
   Select,
   Checkbox,
-  Button,
-  Modal,
-  message,
   Tooltip,
   Switch,
 } from 'antd';
 import './schemaJson.css';
 import _ from 'underscore';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AceEditor from '../AceEditor/AceEditor.js';
 import LocalProvider from '../LocalProvider/index.js';
-const utils = require('../../utils');
 
 const Option = Select.Option;
 const { TextArea } = Input;
@@ -57,7 +49,7 @@ class SchemaString extends PureComponent {
 
   changeEnumOtherValue = (value, data) => {
     var arr = value.split('\n');
-    if (arr.length === 0 || (arr.length == 1 && !arr[0])) {
+    if (arr.length === 0 || (arr.length === 1 && !arr[0])) {
       delete data.enum;
       this.context.changeCustomValue(data);
     } else {
@@ -256,7 +248,7 @@ class SchemaNumber extends PureComponent {
   changeEnumOtherValue = (value, data) => {
     this.setState({ enum: value });
     var arr = value.split('\n');
-    if (arr.length === 0 || (arr.length == 1 && !arr[0])) {
+    if (arr.length === 0 || (arr.length === 1 && !arr[0])) {
       delete data.enum;
       this.context.changeCustomValue(data);
     } else {

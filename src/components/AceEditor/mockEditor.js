@@ -4,8 +4,7 @@ require('brace/mode/json');
 
 function run(options) {
   var editor,
-    mockEditor,
-    rhymeCompleter;
+    mockEditor;
   function handleJson(json) {
     var curData = mockEditor.curData;
     try {

@@ -8,8 +8,6 @@ import {
   QuestionCircleOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-
-import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 
 import {
@@ -23,11 +21,9 @@ import {
   Modal,
   message,
   Tabs,
-  AutoComplete,
 } from 'antd';
 import './index.css';
 import AceEditor from './components/AceEditor/AceEditor.js';
-import _ from 'underscore';
 import { connect } from 'react-redux';
 import SchemaJson from './components/SchemaComponents/SchemaJson.js';
 import PropTypes from 'prop-types';
@@ -40,7 +36,6 @@ import SchemaRenderForm from './SchemaRenderForm'
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 const utils = require('./utils');
 
-const FormItem = Form.Item;
 const Option = Select.Option;
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
@@ -305,9 +300,7 @@ class jsonSchema extends React.Component {
     const {
       visible,
       editVisible,
-      description,
       advVisible,
-      type,
       checked,
       editorModalName,
       previewVisible

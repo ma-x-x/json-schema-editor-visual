@@ -1,7 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { combineReducers, createStore, applyMiddleware } from 'redux';
 import 'antd/dist/antd.css';
 import jeditor from './main';
 
@@ -31,19 +29,19 @@ const options = { lang: 'zh_CN' };
 
 render(
   <div>
-    <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual">
+    <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual" rel="noreferrer">
       <h1>JSON-Schema-Editor</h1>
     </a>
     <p style={{ fontSize: '16px' }}>
       A json-schema editor of high efficient and easy-to-use, base on React.{' '}
-      <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual">
+      <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual" rel="noreferrer">
         Github
       </a>
     </p>
     <br />
     <h3>
       该工具已被用于开源接口管理平台：{' '}
-      <a target="_blank" href="https://github.com/ymfe/yapi">
+      <a target="_blank" href="https://github.com/ymfe/yapi" rel="noreferrer">
         YApi
       </a>
     </h3>

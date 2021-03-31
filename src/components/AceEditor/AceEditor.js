@@ -26,9 +26,6 @@ function getMode(mode) {
 }
 
 class AceEditor extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     this.editor = mockEditor({

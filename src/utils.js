@@ -1,5 +1,4 @@
 const _ = require('underscore');
-const { message } = require('antd');
 
 exports.JSONPATH_JOIN_CHAR = '.';
 exports.lang = 'zh_CN';
@@ -96,9 +95,7 @@ exports.clearSomeFields = function (keys, data) {
 
 function getFieldstitle(data) {
   const requiredtitle = [];
-  Object.keys(data).map(title => {
-    requiredtitle.push(title);
-  });
+  Object.keys(data).map(title =>requiredtitle.push(title));
 
   return requiredtitle;
 }
@@ -187,7 +184,7 @@ function filterStringUiType(format) {
     case 'date-time':
       return _.filter(UI_TYPE, (item) => ['输入框', '日期'].includes(item.label));
     default:
-      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期', '单选框', '下拉单选', '图片展示', '颜色选择', '文件上传'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期选择', '单选框', '下拉单选', '图片展示',  '文件上传'].includes(item.label));
   }
 }
 
@@ -195,17 +192,17 @@ function filterUiType(field, format) {
   switch (field) {
     case 'number':
     case 'integer':
-      return _.filter(UI_TYPE, (item) => ['滑动条'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框'].includes(item.label));
     case 'string':
       return filterStringUiType(format);
     case 'array':
       return _.filter(UI_TYPE, (item) => ['列表','复选框', '下拉多选', '日期范围'].includes(item.label));
     case 'boolean':
-      return _.filter(UI_TYPE, (item) => ['复选框', '开关'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['是否选择', '开关'].includes(item.label));
     case 'object':
-      return _.filter(UI_TYPE, (item) => ['对象'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['组'].includes(item.label));
     default:
-      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期', '单选框', '下拉单选', '图片展示', '颜色选择', '文件上传'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期', '单选框', '下拉单选', '图片展示', '文件上传'].includes(item.label));
   }
 }
 
@@ -251,7 +248,7 @@ exports.setUiData = function setUiData(state, keys, value, data) {
 };
 
 exports.deleteUiData = function deleteUiData(state, keys) {
-  let curState = state;
+  // let curState = state;
   // for (let i = 0; i < keys.length - 1; i++) {
   //   curState = curState ? curState[keys[i]] : {};
   // }
@@ -289,7 +286,7 @@ function getChildren(schema) {
 // ----------------- schema 相关
 
 // 合并propsSchema和UISchema。由于两者的逻辑相关性，合并为一个大schema能简化内部处理
-exports.combineSchema = function combineSchema(propsSchema = {}, uiSchema = {}) {
+export function combineSchema(propsSchema = {}, uiSchema = {}) {
   const propList = getChildren(propsSchema);
   const newList = propList.map(p => {
     const { name } = p;
@@ -312,4 +309,24 @@ exports.combineSchema = function combineSchema(propsSchema = {}, uiSchema = {}) 
     }
     return { ...p, schema: { ...p.schema, ...ui } };
   });
+
+  const newObj = {};
+  newList.forEach(s => {
+    newObj[s.name] = s.schema;
+  });
+
+  const topLevelUi = {};
+  Object.keys(uiSchema).forEach(key => {
+    if (typeof key === 'string' && key.substring(0, 3) === 'ui:') {
+      topLevelUi[key] = uiSchema[key];
+    }
+  });
+  if (isEmpty(newObj)) {
+    return { ...propsSchema, ...topLevelUi };
+  }
+  return { ...propsSchema, ...topLevelUi, properties: newObj };
+}
+
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
 }
