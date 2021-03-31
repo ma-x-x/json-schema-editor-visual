@@ -1,18 +1,29 @@
 import React, { Component, PureComponent } from 'react';
+
+import {
+  CaretDownOutlined,
+  CaretRightOutlined,
+  CloseOutlined,
+  EditOutlined,
+  PlusOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+
 import {
   Dropdown,
   Menu,
   Row,
   Col,
-  Form,
   Select,
   Checkbox,
   Button,
-  Icon,
   Input,
   Modal,
   message,
-  Tooltip
+  Tooltip,
 } from 'antd';
 import FieldInput from './FieldInput'
 import './schemaJson.css';
@@ -41,12 +52,14 @@ const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
   }
   switch (data.type) {
     case 'array':
+      newUiPrefixMap.push({
+        key: 'items',
+        type:'string'
+      })
       return <SchemaArray prefix={name} data={data} showEdit={showEdit} showAdv={showAdv} uiSchema={uiSchema} uiPrefixMap={newUiPrefixMap} />;
-      break;
     case 'object':
       let nameArray = [].concat(name, 'properties');
       return <SchemaObject prefix={nameArray} data={data} showEdit={showEdit} showAdv={showAdv} uiSchema={uiSchema} uiPrefixMap={newUiPrefixMap} />;
-      break;
     default:
       return null;
   }
@@ -62,7 +75,7 @@ class SchemaArray extends PureComponent {
 
   componentWillMount() {
     const { prefix } = this.props;
-    let length = prefix.filter(name => name != 'properties').length;
+    let length = prefix.filter(name => name !== 'properties').length;
     this.__tagPaddingLeftStyle = {
       paddingLeft: `${20 * (length + 1)}px`
     };
@@ -77,6 +90,12 @@ class SchemaArray extends PureComponent {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
     this.Model.changeTypeAction({ key, value });
+    
+    // 修改ui
+    let uiPrefix = this.getUiPrefix();
+    const uiWidget = utils.filterUiTypeDefaultValue(value);
+    const uiWidgetObj = utils.defaultSchemaUi(value);
+    this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
   };
 
   // 修改备注信息
@@ -129,7 +148,7 @@ class SchemaArray extends PureComponent {
   // 修改展示UI
   handleChangeUiWidget = value => {
     let prefix = this.getUiPrefix();
-    this.Model.changeUiAction({ prefix: prefix, key: 'items', value });
+    this.UiModel.changeUiAction({ prefix: prefix, key: 'items', value, type: this.props.data.type });
   }
 
   // 修改分组
@@ -141,7 +160,8 @@ class SchemaArray extends PureComponent {
   }
 
   getUiPrefix() {
-    return [].concat(this.props.uiPrefixMap, this.props.name);
+    const { name, data } = this.props;
+    return [].concat(this.props.uiPrefixMap, { key: name, type: data.type });
   }
 
   render() {
@@ -151,118 +171,124 @@ class SchemaArray extends PureComponent {
 
     let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
-    return (
-      !_.isUndefined(data.items) && (
-        <div className="array-type">
-          <Row className="array-item-type" type="flex" justify="space-around" align="middle">
-            <Col
-              span={8}
-              className="col-item name-item col-item-name"
-              style={this.__tagPaddingLeftStyle}
-            >
-              <Row type="flex" justify="space-around" align="middle">
-                <Col span={2} className="down-style-col">
-                  {items.type === 'object' ? (
-                    <span className="down-style" onClick={this.handleClickIcon}>
-                      {showIcon ? (
-                        <Icon className="icon-object" type="caret-down" />
-                      ) : (
-                        <Icon className="icon-object" type="caret-right" />
-                      )}
-                    </span>
-                  ) : null}
-                </Col>
-                <Col span={22}>
-                  <Input addonAfter={<Checkbox disabled />} disabled value="Items" />
-                </Col>
-              </Row>
-            </Col>
-            <Col span={2} className="col-item col-item-type">
-              <Select
-                name="itemtype"
-                className="type-select-style"
-                onChange={this.handleChangeType}
-                value={items.type}
-              >
-                {SCHEMA_TYPE.map((item, index) => {
-                  return (
-                    <Option value={item} key={index}>
-                      {item}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Col>
-            {this.context.isMock && (
-              <Col span={2} className="col-item col-item-mock">
-
-                <MockSelect
-                  schema={items}
-                  showEdit={() => this.handleShowEdit('mock', items.type)}
-                  onChange={this.handleChangeMock}
-                />
+    let uiSelect = '';
+    let childUiSchema = utils.cloneObject(uiSchema);
+    uiPrefixMap.forEach((item, index) => {
+      childUiSchema = childUiSchema[item.key];
+      if (index === uiPrefixMap.length - 1) {
+        uiSelect =  childUiSchema && childUiSchema['ui:widget'];
+      }
+    });
+    return !_.isUndefined(data.items) && (
+      <div className="array-type">
+        <Row className="array-item-type" type="flex" justify="space-around" align="middle">
+          <Col
+            span={8}
+            className="col-item name-item col-item-name"
+            style={this.__tagPaddingLeftStyle}
+          >
+            <Row type="flex" justify="space-around" align="middle">
+              <Col span={2} className="down-style-col">
+                {items.type === 'object' ? (
+                  <span className="down-style" onClick={this.handleClickIcon}>
+                    {showIcon ? (
+                      <CaretDownOutlined className="icon-object" />
+                    ) : (
+                      <CaretRightOutlined className="icon-object" />
+                    )}
+                  </span>
+                ) : null}
               </Col>
-            )}
-            <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-mock">
-              <Input
-                addonAfter={<Icon type="edit" onClick={() => this.handleShowEdit('title')} />}
-                placeholder={LocaleProvider('title')}
-                value={items.title}
-                onChange={this.handleChangeTitle}
+              <Col span={22}>
+                <Input addonAfter={<Checkbox disabled />} disabled value="Items" />
+              </Col>
+            </Row>
+          </Col>
+          <Col span={2} className="col-item col-item-type">
+            <Select
+              name="itemtype"
+              className="type-select-style"
+              onChange={this.handleChangeType}
+              value={items.type}
+            >
+              {SCHEMA_TYPE.map((item, index) => {
+                return (
+                  <Option value={item} key={index}>
+                    {item}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Col>
+          {this.context.isMock && (
+            <Col span={2} className="col-item col-item-mock">
+
+              <MockSelect
+                schema={items}
+                showEdit={() => this.handleShowEdit('mock', items.type)}
+                onChange={this.handleChangeMock}
               />
             </Col>
-            <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-desc">
-              <Input
-                addonAfter={<Icon type="edit" onClick={() => this.handleShowEdit('description')} />}
-                placeholder={LocaleProvider('description')}
-                value={items.description}
-                onChange={this.handleChangeDesc}
-              />
-            </Col>
+          )}
+          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-mock">
+            <Input
+              addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
+              placeholder={LocaleProvider('title')}
+              value={items.title}
+              onChange={this.handleChangeTitle}
+            />
+          </Col>
+          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-desc">
+            <Input
+              addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
+              placeholder={LocaleProvider('description')}
+              value={items.description}
+              onChange={this.handleChangeDesc}
+            />
+          </Col>
 
-            <Col span={2} className="col-item col-item-group">
-              <Input
-                placeholder={LocaleProvider('group')}
-                value={items.group}
-                onChange={this.handleChangeGroup}
-              />
-            </Col>
-            <Col span={2} className="col-item col-item-ui">
-              <Select
-                className="type-select-style"
-                onChange={this.handleChangeUiWidget}
-                value={items['ui:widget']}
-              >
-                {filterUiType(items.type, items.format).map((item, index) => {
-                  return (
-                    <Option value={item.value} key={index}>
-                      {item.label}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Col>
+          <Col span={2} className="col-item col-item-group">
+            <Input
+              placeholder={LocaleProvider('group')}
+              value={items.group}
+              onChange={this.handleChangeGroup}
+            />
+          </Col>
+          <Col span={2} className="col-item col-item-ui">
+            <Select
+              className="type-select-style"
+              onChange={this.handleChangeUiWidget}
+              value={uiSelect}
+            >
+              {filterUiType(items.type, items.format).map((item, index) => {
+                return (
+                  <Option value={item.value} key={index}>
+                    {item.label}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Col>
 
 
-            <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
-              <span className="adv-set" onClick={this.handleShowAdv}>
-                <Tooltip placement="top" title={LocaleProvider('adv_setting')}>
-                  <Icon type="setting" />
+          <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
+            <span className="adv-set" onClick={this.handleShowAdv}>
+              <Tooltip placement="top" title={LocaleProvider('adv_setting')}>
+                <SettingOutlined />
+              </Tooltip>
+            </span>
+
+            {items.type === 'object' ? (
+              <span onClick={this.handleAddChildField}>
+                <Tooltip placement="top" title={LocaleProvider('add_child_node')}>
+                  <PlusOutlined className="plus" />
                 </Tooltip>
               </span>
-
-              {items.type === 'object' ? (
-                <span onClick={this.handleAddChildField}>
-                  <Tooltip placement="top" title={LocaleProvider('add_child_node')}>
-                    <Icon type="plus" className="plus" />
-                  </Tooltip>
-                </span>
-              ) : null}
-            </Col>
-          </Row>
-          <div className="option-formStyle">{mapping(prefixArray, items, showEdit, showAdv, uiSchema, uiPrefixMap)}</div>
-        </div>
-      )
+            ) : null}
+          </Col>
+        </Row>
+        <div className="option-formStyle">{mapping(prefixArray, items, showEdit, showAdv, uiSchema, uiPrefixMap)}</div>
+      </div>
     );
   }
 }
@@ -330,10 +356,16 @@ class SchemaItem extends PureComponent {
   }
 
   // 修改数据类型
-  handleChangeType = e => {
+  handleChangeType = value => {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
-    this.Model.changeTypeAction({ key, value: e });
+    this.Model.changeTypeAction({ key, value: value });
+
+    // 修改ui
+    let uiPrefix = this.getUiPrefix();
+    const uiWidget = utils.filterUiTypeDefaultValue(value);
+    const uiWidgetObj = utils.defaultSchemaUi(value);
+    this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
   };
 
   // 删除节点
@@ -342,6 +374,10 @@ class SchemaItem extends PureComponent {
     let nameArray = this.getPrefix();
     this.Model.deleteItemAction({ key: nameArray });
     this.Model.enableRequireAction({ prefix, name, required: false });
+
+     // 删除ui
+     let uiPrefix = this.getUiPrefix();
+     this.UiModel.deleteItemUiAction({ prefix: uiPrefix });
   };
   /*
   展示备注编辑弹窗
@@ -386,7 +422,7 @@ class SchemaItem extends PureComponent {
   // 修改展示UI
   handleChangeUiWidget = value => {
     let prefix = this.getUiPrefix();
-    this.UiModel.changeUiAction({ prefix: prefix, key: this.props.name, value });
+    this.UiModel.changeUiAction({ prefix: prefix, key: this.props.name, value, type: this.props.data.type });
   }
 
   // 修改分组
@@ -398,7 +434,8 @@ class SchemaItem extends PureComponent {
   }
 
   getUiPrefix() {
-    return [].concat(this.props.uiPrefixMap, this.props.name);
+    const { name, data } = this.props;
+    return [].concat(this.props.uiPrefixMap, { key: name, type: data.type });
   }
 
   render() {
@@ -415,10 +452,10 @@ class SchemaItem extends PureComponent {
     uiPrefixMapArray.forEach((item, index) => {
       childUiSchema = childUiSchema[item.key];
       if (index === uiPrefixMapArray.length - 1) {
-        uiSelect = childUiSchema['ui:widget'];
+        uiSelect = childUiSchema && childUiSchema['ui:widget'];
       }
     });
-    console.log('uiSelect', uiSelect, 'name', name);
+    console.log('uiSelect', uiSelect, 'data', data);
 
     return show ? (
       <div>
@@ -433,9 +470,9 @@ class SchemaItem extends PureComponent {
                 {value.type === 'object' ? (
                   <span className="down-style" onClick={this.handleClickIcon}>
                     {showIcon ? (
-                      <Icon className="icon-object" type="caret-down" />
+                      <CaretDownOutlined className="icon-object" />
                     ) : (
-                      <Icon className="icon-object" type="caret-right" />
+                      <CaretRightOutlined className="icon-object" />
                     )}
                   </span>
                 ) : null}
@@ -498,7 +535,7 @@ class SchemaItem extends PureComponent {
 
           <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-mock">
             <Input
-              addonAfter={<Icon type="edit" onClick={() => this.handleShowEdit('title')} />}
+              addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
               value={value.title}
               onChange={this.handleChangeTitle}
@@ -507,7 +544,7 @@ class SchemaItem extends PureComponent {
 
           <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-desc">
             <Input
-              addonAfter={<Icon type="edit" onClick={() => this.handleShowEdit('description')} />}
+              addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
               value={value.description}
               onChange={this.handleChangeDesc}
@@ -527,6 +564,7 @@ class SchemaItem extends PureComponent {
               className="type-select-style"
               onChange={this.handleChangeUiWidget}
               value={uiSelect}
+
             >
               {filterUiType(value.type, value.format).map((item, index) => {
                 return (
@@ -542,18 +580,18 @@ class SchemaItem extends PureComponent {
           <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
             <span className="adv-set" onClick={this.handleShowAdv}>
               <Tooltip placement="top" title={LocaleProvider('adv_setting')}>
-                <Icon type="setting" />
+                <SettingOutlined />
               </Tooltip>
             </span>
             <span className="delete-item" onClick={this.handleDeleteItem}>
-              <Icon type="close" className="close" />
+              <CloseOutlined className="close" />
             </span>
             {value.type === 'object' ? (
               <DropPlus prefix={prefix} name={name} uiPrefixMap={uiPrefixMap} />
             ) : (
               <span onClick={this.handleAddField}>
                 <Tooltip placement="top" title={LocaleProvider('add_sibling_node')}>
-                  <Icon type="plus" className="plus" />
+                  <PlusOutlined className="plus" />
                 </Tooltip>
               </span>
             )}
@@ -612,7 +650,7 @@ const SchemaObject = connect(state => ({
 }))(SchemaObjectComponent);
 
 const DropPlus = (props, context) => {
-  const { prefix, name, add, uiPrefixMap } = props;
+  const { prefix, name,  uiPrefixMap } = props;
   const Model = context.Model.schema;
   const UiModel = context.Model.uiSchema;
   const menu = (
@@ -642,7 +680,7 @@ const DropPlus = (props, context) => {
   return (
     <Tooltip placement="top" title={LocaleProvider('add_node')}>
       <Dropdown overlay={menu}>
-        <Icon type="plus" className="plus" />
+        <PlusOutlined className="plus" />
       </Dropdown>
     </Tooltip>
   );
@@ -654,7 +692,7 @@ DropPlus.contextTypes = {
 };
 
 const SchemaJson = props => {
-  const uiPrefixMap = new Array();
+  const uiPrefixMap = [];
   const item = mapping([], props.data, props.showEdit, props.showAdv, props.uiSchema, uiPrefixMap);
   return <div className="schema-content">{item}</div>;
 };

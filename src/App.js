@@ -1,18 +1,29 @@
 import React from 'react';
+
+import {
+  CaretDownOutlined,
+  CaretRightOutlined,
+  EditOutlined,
+  PlusOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+
 import {
   Input,
   Row,
   Tooltip,
   Col,
-  Form,
   Select,
   Checkbox,
   Button,
-  Icon,
   Modal,
   message,
   Tabs,
-  AutoComplete
+  AutoComplete,
 } from 'antd';
 import './index.css';
 import AceEditor from './components/AceEditor/AceEditor.js';
@@ -26,7 +37,7 @@ import CustomItem from './components/SchemaComponents/SchemaOther.js';
 import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
-import FormRender from 'form-render/lib/antd';
+import SchemaRenderForm from './SchemaRenderForm'
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 const utils = require('./utils');
 
@@ -96,7 +107,7 @@ class jsonSchema extends React.Component {
     });
   };
 
-  cancelPreviewModal= () => {
+  cancelPreviewModal = () => {
     this.setState({
       previewVisible: false
     });
@@ -158,6 +169,9 @@ class jsonSchema extends React.Component {
   // 修改数据类型
   changeType = (key, value) => {
     this.Model.changeTypeAction({ key: [key], value });
+    const uiWidget = utils.filterUiTypeDefaultValue(value);
+    const uiWidgetObj = utils.defaultSchemaUi(value);
+    this.UiModel.changeUiAction({ prefix: [], uiWidgetObj, value: uiWidget, type: value });
   };
 
   handleImportJson = e => {
@@ -176,7 +190,7 @@ class jsonSchema extends React.Component {
   // 增加子节点
   addChildField = key => {
     this.Model.addChildFieldAction({ key: [key] });
-    this.UiModel.addChildFieldUiAction({ uiPrefixMap:[] });
+    this.UiModel.addChildFieldUiAction({ uiPrefixMap: [] });
     this.setState({ show: true });
   };
 
@@ -194,7 +208,7 @@ class jsonSchema extends React.Component {
 
   // 修改uiSchema
   changeUiWidget = (key, value) => {
-    this.UiModel.changeUiAction({ key: key ? [key] : [], value });
+    this.UiModel.changeUiAction({ prefix: [], value,type: this.props.schema.type });
   }
 
   // 备注/mock弹窗 点击ok 时
@@ -285,7 +299,7 @@ class jsonSchema extends React.Component {
   };
 
   onFmChange = (value) => {
-    
+
   }
 
   render() {
@@ -306,12 +320,6 @@ class jsonSchema extends React.Component {
 
     console.log('uiSchema', uiSchema);
 
-    const formSchema = {
-      schema, uiSchema
-    }
-
-    console.log('formSchema',formSchema);
-
     let disabled =
       this.props.schema.type === 'object' || this.props.schema.type === 'array' ? false : true;
 
@@ -321,8 +329,8 @@ class jsonSchema extends React.Component {
           {LocalProvider('import_json')}
         </Button>
         <Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
-        {LocalProvider('preview')}
-      </Button>
+          {LocalProvider('preview')}
+        </Button>
         <Modal
           maskClosable={false}
           visible={visible}
@@ -368,7 +376,7 @@ class jsonSchema extends React.Component {
                     rel="noopener noreferrer"
                     href="https://github.com/YMFE/json-schema-editor-visual/issues/38"
                   >
-                    <Icon type="question-circle-o" />
+                    <QuestionCircleOutlined />
                   </a>
                 </Tooltip>
               )}
@@ -391,28 +399,28 @@ class jsonSchema extends React.Component {
 
 
         <Modal
-        maskClosable={false}
-        visible={previewVisible}
-        title={LocalProvider('preview')}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        className="json-schema-react-editor-import-modal"
-        okText={'ok'}
-        cancelText={LocalProvider('cancel')}
-        footer={[
-          <Button key="back" onClick={this.cancelPreviewModal}>
-            {LocalProvider('cancel')}
-          </Button>,
-          <Button key="submit" type="primary" onClick={this.cancelPreviewModal}>
-            {LocalProvider('ok')}
-          </Button>
-        ]}
+          maskClosable={false}
+          visible={previewVisible}
+          title={LocalProvider('preview')}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          className="json-schema-react-editor-import-modal"
+          okText={'ok'}
+          cancelText={LocalProvider('cancel')}
+          footer={[
+            <Button key="back" onClick={this.cancelPreviewModal}>
+              {LocalProvider('cancel')}
+            </Button>,
+            <Button key="submit" type="primary" onClick={this.cancelPreviewModal}>
+              {LocalProvider('ok')}
+            </Button>
+          ]}
         >
-  { /* <FormRender
-          schema={formSchema}
-          onChange={this.onFmChange}
-  />*/}
-      </Modal>
+          <SchemaRenderForm
+            schema={schema}
+            uiSchema={uiSchema}
+          />
+        </Modal>
 
         {advVisible && (
           <Modal
@@ -441,7 +449,7 @@ class jsonSchema extends React.Component {
             <Row type="flex" align="middle" style={{ background: 'rgba(0,0,0,.02)' }} className="root-header-wrapper">
               <Col span={8} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle">
-                  <Col span={3} className="down-style-col">
+                  <Col span={2} className="down-style-col">
                   </Col>
                   <Col span={20}>
                     名称
@@ -473,11 +481,11 @@ class jsonSchema extends React.Component {
               </Col>
               <Col span={2} className="textAlignLeft">
                 设置
-                <span onClick={() => this.addChildField('properties')} style={{ marginLeft: 20 }}>
+               {schema.type === 'object' && <span onClick={() => this.addChildField('properties')} style={{ marginLeft: 20 }}>
                   <Tooltip placement="top" title={LocalProvider('add_child_node')}>
-                    <Icon type="plus" className="plus" />
+                    <PlusOutlined className="plus" />
                   </Tooltip>
-                </span>
+                </span>}
               </Col>
             </Row>
           </Col>
@@ -501,9 +509,9 @@ class jsonSchema extends React.Component {
                     {schema.type === 'object' ? (
                       <span className="down-style" onClick={this.clickIcon}>
                         {this.state.show ? (
-                          <Icon className="icon-object" type="caret-down" />
+                          <CaretDownOutlined className="icon-object" />
                         ) : (
-                          <Icon className="icon-object" type="caret-right" />
+                          <CaretRightOutlined className="icon-object" />
                         )}
                       </span>
                     ) : null}
@@ -552,12 +560,10 @@ class jsonSchema extends React.Component {
               <Col span={this.props.isMock ? 3 : 4} className="col-item col-item-mock">
                 <Input
                   addonAfter={
-                    <Icon
-                      type="edit"
+                    <EditOutlined
                       onClick={() =>
                         this.showEdit([], 'title', schema.title)
-                      }
-                    />
+                      } />
                   }
                   placeholder={LocaleProvider('title')}
                   value={schema.title}
@@ -567,12 +573,10 @@ class jsonSchema extends React.Component {
               <Col span={this.props.isMock ? 3 : 4} className="col-item col-item-desc">
                 <Input
                   addonAfter={
-                    <Icon
-                      type="edit"
+                    <EditOutlined
                       onClick={() =>
                         this.showEdit([], 'description', this.props.schema.description)
-                      }
-                    />
+                      } />
                   }
                   placeholder={LocaleProvider('description')}
                   value={schema.description}
@@ -590,7 +594,7 @@ class jsonSchema extends React.Component {
                 <Select
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
-                  value={'object'}
+                  value={uiSchema['ui:widget']}
                 >
                   {filterUiType(schema.type).map((item, index) => {
                     return (
@@ -604,13 +608,13 @@ class jsonSchema extends React.Component {
               <Col span={2} className="col-item col-item-setting">
                 <span className="adv-set" onClick={() => this.showAdv([], this.props.schema)}>
                   <Tooltip placement="top" title={LocalProvider('adv_setting')}>
-                    <Icon type="setting" />
+                    <SettingOutlined />
                   </Tooltip>
                 </span>
                 {schema.type === 'object' ? (
                   <span onClick={() => this.addChildField('properties')}>
                     <Tooltip placement="top" title={LocalProvider('add_child_node')}>
-                      <Icon type="plus" className="plus" />
+                      <PlusOutlined className="plus" />
                     </Tooltip>
                   </span>
                 ) : null}

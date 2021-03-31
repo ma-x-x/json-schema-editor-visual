@@ -138,8 +138,8 @@
 /** 自定义样式 **/
 .json-schema-react-editor .root-header-wrapper{
   background: rgba(0,0,0,.02);
-  height: 48px;
-  line-height: 48px;
+  height: 32px;
+  line-height: 32px;
 }
 
 .json-schema-react-editor .textAlignLeft{

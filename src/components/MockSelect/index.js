@@ -1,5 +1,6 @@
 import React from 'react';
-import { Input, AutoComplete, Icon } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+import { Input, AutoComplete } from 'antd';
 import PropTypes from 'prop-types';
 import LocaleProvider from '../LocalProvider/index.js';
 
@@ -38,7 +39,7 @@ export default class MockSelect extends React.Component {
           onChange={this.props.onChange}
           disabled={schema.type === 'object' || schema.type === 'array'}
         >
-          <Input addonAfter={<Icon type="edit" onClick={(e) => {e.stopPropagation(); this.props.showEdit()}} />} />
+          <Input addonAfter={<EditOutlined onClick={(e) => {e.stopPropagation(); this.props.showEdit()}} />} />
         </AutoComplete>
       </div>
     );

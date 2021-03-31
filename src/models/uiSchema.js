@@ -1,8 +1,7 @@
 import utils from '../utils';
 import { configCache } from '../globalData';
-const _ = require('underscore');
+import _ from 'underscore';
 
-let fieldNum = 1;
 export default {
   state: {
     message: null,
@@ -10,46 +9,33 @@ export default {
   },
 
   changeUiAction: function (state, action, oldState) {
-    const prefix = action.prefix;
-    const key = action.key;
+    const prefix = action.prefix; 
+    const uiWidgetObj = action.uiWidgetObj;
     const value = action.value;
-    const data = action.data;
-    prefix.set(key, 'string');
-    let keys = [];
-    // let parentKeys = utils.getParentKeys(keys);
-    // let oldData = oldState.data;
-    // let parentData = utils.getUiData(oldData, parentKeys);
-    // if (parentData['ui:widget'] === value) {
-    //   return;
-    // }
-
-    // let newParentDataItem = utils.defaultSchemaUi(value);
-
-    // let newParentData = Object.assign({}, keys[0] ? { [keys[0]]: newParentDataItem } : newParentDataItem);
-
-    // let newKeys = [].concat('data', parentKeys);
-    // utils.setUiData(state, newKeys, newParentData, data);
+    const dataType = action.type;
+    let newKeys = prefix.map(item => item.key);
+    let newDataItem = _.isEmpty(uiWidgetObj) ? {"ui:widget": value,type:dataType} : uiWidgetObj;
+    utils.setUiData(state.data, newKeys, newDataItem);
   },
 
 
   deleteItemUiAction: function (state, action, oldState) {
-    const keys = action.key;
-
+    const prefix = action.prefix;
+    const keys = prefix.map(item => item.key);
     let name = keys[keys.length - 1];
-    let oldData = oldState.data;
     let parentKeys = utils.getParentKeys(keys);
-    let parentData = utils.getData(oldData, parentKeys);
+    let oldData = oldState.data;
+     let parentData = utils.getData(oldData, parentKeys);
     let newParentData = {};
     for (let i in parentData) {
       if (i !== name) {
         newParentData[i] = parentData[i];
       }
     }
-
-    utils.setData(state.data, parentKeys, newParentData);
+    utils.setUiData(state.data, parentKeys, newParentData);
   },
 
-  addFieldUiAction: function (state, action, oldState) {
+  addFieldUiAction: function (state, action) {
     const currentNodeName = configCache.getCache('newNodeName');
     const uiPrefixMap = utils.cloneObject(action.uiPrefixMap);
     uiPrefixMap.push({
@@ -61,7 +47,7 @@ export default {
     utils.setUiData(state.data, keys, newPropertiesData);
   },
 
-  addChildFieldUiAction: function (state, action, oldState) {
+  addChildFieldUiAction: function (state, action) {
     const currentNodeName = configCache.getCache('newNodeName');
     const uiPrefixMap = utils.cloneObject(action.uiPrefixMap);
     uiPrefixMap.push({

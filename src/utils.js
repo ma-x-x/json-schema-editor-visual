@@ -194,15 +194,15 @@ function filterUiType(field, format) {
   switch (field) {
     case 'number':
     case 'integer':
-      return _.filter(UI_TYPE, (item) => ['输入框', '滑动条'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['滑动条'].includes(item.label));
     case 'string':
       return filterStringUiType(format);
     case 'array':
-      return _.filter(UI_TYPE, (item) => ['输入框', '复选框', '下拉多选', '日期范围'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['列表','复选框', '下拉多选', '日期范围'].includes(item.label));
     case 'boolean':
-      return _.filter(UI_TYPE, (item) => ['输入框', '复选框', '开关'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['复选框', '开关'].includes(item.label));
     case 'object':
-      return _.filter(UI_TYPE, (item) => ['输入框','对象'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['对象'].includes(item.label));
     default:
       return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期', '单选框', '下拉单选', '图片展示', '颜色选择', '文件上传'].includes(item.label));
   }
@@ -218,15 +218,15 @@ function filterUiTypeDefaultValue(field) {
 exports.defaultSchemaUi = function (field) {
   return field === 'array' ? {
     'ui:widget': filterUiTypeDefaultValue(field),
-    ...defaultSchema[field],
+    type:field,
     items: {
       'ui:widget': filterUiTypeDefaultValue('string'),
-      ...defaultSchema[field]
+      type:'string'
     }
-  } : { 'ui:widget': filterUiTypeDefaultValue(field), ...defaultSchema[field] }
+  } : { 'ui:widget': filterUiTypeDefaultValue(field), type:field }
 }
 
-
+exports.filterUiTypeDefaultValue = filterUiTypeDefaultValue;
 
 
 exports.getUiData = function getUiData(state, keys) {
@@ -239,10 +239,14 @@ exports.getUiData = function getUiData(state, keys) {
 
 exports.setUiData = function setUiData(state, keys, value, data) {
   let curState = state;
-  for (let i = 0; i < keys.length - 1; i++) {
-    curState = curState ? curState[keys[i]] : {};
+  if (keys.length === 0) {
+    curState = Object.assign(curState, value);
+  } else {
+    for (let i = 0; i < keys.length - 1; i++) {
+      curState = curState ? curState[keys[i]] : {};
+    }
+    curState[keys[keys.length - 1]] = value;
   }
-  curState[keys[keys.length - 1]] = value;
 };
 
 exports.deleteUiData = function deleteUiData(state, keys) {
@@ -253,3 +257,58 @@ exports.deleteUiData = function deleteUiData(state, keys) {
 
   // delete curState[keys[keys.length - 1]];
 };
+
+
+// 获得propsSchema的children
+function getChildren(schema) {
+  if (!schema) return [];
+  const {
+    // object
+    properties,
+    // array
+    items,
+    type,
+  } = schema;
+  if (!properties && !items) {
+    return [];
+  }
+  let schemaSubs = {};
+  if (type === 'object') {
+    schemaSubs = properties;
+  }
+  if (type === 'array') {
+    schemaSubs = items;
+  }
+  return Object.keys(schemaSubs).map(name => ({
+    schema: schemaSubs[name],
+    name,
+  }));
+}
+
+// ----------------- schema 相关
+
+// 合并propsSchema和UISchema。由于两者的逻辑相关性，合并为一个大schema能简化内部处理
+exports.combineSchema = function combineSchema(propsSchema = {}, uiSchema = {}) {
+  const propList = getChildren(propsSchema);
+  const newList = propList.map(p => {
+    const { name } = p;
+    const { type, enum: options, properties, items } = p.schema;
+    const isObj = type === 'object' && properties;
+    const isArr = type === 'array' && items && !options; // enum + array 代表的多选框，没有sub
+    const ui = name && uiSchema[p.name];
+    if (!ui) {
+      return p;
+    }
+    // 如果是list，递归合并items
+    if (isArr) {
+      const newItems = combineSchema(items, ui.items || {});
+      return { ...p, schema: { ...p.schema, ...ui, items: newItems } };
+    }
+    // object递归合并整个schema
+    if (isObj) {
+      const newSchema = combineSchema(p.schema, ui);
+      return { ...p, schema: newSchema };
+    }
+    return { ...p, schema: { ...p.schema, ...ui } };
+  });
+}

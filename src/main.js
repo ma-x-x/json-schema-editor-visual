@@ -18,7 +18,7 @@ export default  (config = {})=>{
   if(config.format){
     Model.__jsonSchemaFormat = config.format
   } else {
-    Model.__jsonSchemaFormat = utils.format
+    Model.__jsonSchemaFormat = format
   }
 
   if(config.mock) {
