@@ -2,11 +2,11 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import App from './App.js'
-import utils, { format} from './utils'
 import moox from 'moox'
 import schema from './models/schema'
 import uiSchema from './models/uiSchema'
 import PropTypes from 'prop-types'
+const utils = require('./utils');
 
 export default  (config = {})=>{
   if(config.lang) utils.lang = config.lang;
@@ -18,7 +18,7 @@ export default  (config = {})=>{
   if(config.format){
     Model.__jsonSchemaFormat = config.format
   } else {
-    Model.__jsonSchemaFormat = format
+    Model.__jsonSchemaFormat = utils.format
   }
 
   if(config.mock) {

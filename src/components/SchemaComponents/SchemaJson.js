@@ -31,8 +31,8 @@ import _ from 'underscore';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LocaleProvider from '../LocalProvider/index.js';
-import utils from '../../utils';
 import MockSelect from '../MockSelect/index.js';
+const utils = require('../../utils');
 
 const FormItem = Form.Item;
 const Option = Select.Option;

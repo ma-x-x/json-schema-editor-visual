@@ -1,6 +1,6 @@
-import utils from '../utils';
 import { configCache } from '../globalData';
 import _ from 'underscore';
+const utils = require('../utils');
 
 export default {
   state: {

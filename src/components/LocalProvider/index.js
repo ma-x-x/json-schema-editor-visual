@@ -1,5 +1,4 @@
-import utils from '../../utils'
-import React from 'react';
+const utils = require('../../utils');
 
 const langs = {
   en_US: {

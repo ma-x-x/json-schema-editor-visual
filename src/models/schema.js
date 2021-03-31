@@ -1,6 +1,6 @@
-import utils from '../utils';
 import handleSchema from '../schema.js';
 import { configCache } from '../globalData';
+const utils = require('../utils');
 const _ = require('underscore');
 
 let fieldNum = 1;
