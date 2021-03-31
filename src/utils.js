@@ -1,5 +1,7 @@
-const JSONPATH_JOIN_CHAR = '.';
-exports.JSONPATH_JOIN_CHAR = JSONPATH_JOIN_CHAR;
+const _ = require('underscore');
+const { message } = require('antd');
+
+exports.JSONPATH_JOIN_CHAR = '.';
 exports.lang = 'zh_CN';
 exports.format = [
   { name: 'date-time' },
@@ -10,8 +12,7 @@ exports.format = [
   { name: 'ipv6' },
   { name: 'uri' }
 ];
-const _ = require('underscore');
-const { message } = require('antd');
+
 exports.SCHEMA_TYPE = ['string', 'number', 'array', 'object', 'boolean', 'integer'];
 const defaultSchema = {
   string: {

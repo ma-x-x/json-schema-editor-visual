@@ -31,7 +31,6 @@ import _ from 'underscore';
 import { connect } from 'react-redux';
 import SchemaJson from './components/SchemaComponents/SchemaJson.js';
 import PropTypes from 'prop-types';
-import { SCHEMA_TYPE, debounce, filterUiType } from './utils.js';
 import handleSchema from './schema';
 import CustomItem from './components/SchemaComponents/SchemaOther.js';
 import LocalProvider from './components/LocalProvider/index.js';
@@ -53,7 +52,7 @@ const TabPane = Tabs.TabPane;
 class jsonSchema extends React.Component {
   constructor(props) {
     super(props);
-    this.alterMsg = debounce(this.alterMsg, 2000);
+    this.alterMsg = utils.debounce(this.alterMsg, 2000);
     this.state = {
       visible: false,
       show: true,
@@ -539,7 +538,7 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeType(`type`, e)}
                   value={schema.type}
                 >
-                  {SCHEMA_TYPE.map((item, index) => {
+                  {utils.SCHEMA_TYPE.map((item, index) => {
                     return (
                       <Option value={item} key={index}>
                         {item}
@@ -596,7 +595,7 @@ class jsonSchema extends React.Component {
                   onChange={value => this.changeUiWidget(null, value)}
                   value={uiSchema['ui:widget']}
                 >
-                  {filterUiType(schema.type).map((item, index) => {
+                  {utils.filterUiType(schema.type).map((item, index) => {
                     return (
                       <Option value={item.value} key={index}>
                         {item.label}

@@ -30,7 +30,6 @@ import './schemaJson.css';
 import _ from 'underscore';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { JSONPATH_JOIN_CHAR, SCHEMA_TYPE, filterUiType } from '../../utils.js';
 import LocaleProvider from '../LocalProvider/index.js';
 import utils from '../../utils';
 import MockSelect from '../MockSelect/index.js';
@@ -169,7 +168,7 @@ class SchemaArray extends PureComponent {
     const items = data.items;
     let prefixArray = [].concat(prefix, 'items');
 
-    let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
+    let prefixArrayStr = [].concat(prefixArray, 'properties').join(utils.JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let uiSelect = '';
     let childUiSchema = utils.cloneObject(uiSchema);
@@ -211,7 +210,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeType}
               value={items.type}
             >
-              {SCHEMA_TYPE.map((item, index) => {
+              {utils.SCHEMA_TYPE.map((item, index) => {
                 return (
                   <Option value={item} key={index}>
                     {item}
@@ -260,7 +259,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeUiWidget}
               value={uiSelect}
             >
-              {filterUiType(items.type, items.format).map((item, index) => {
+              {utils.filterUiType(items.type, items.format).map((item, index) => {
                 return (
                   <Option value={item.value} key={index}>
                     {item.label}
@@ -443,8 +442,8 @@ class SchemaItem extends PureComponent {
     let value = data.properties[name];
     let prefixArray = [].concat(prefix, name);
     let uiPrefixMapArray = [].concat(uiPrefixMap, [{ key: name, type: 'string' }]);
-    let prefixStr = prefix.join(JSONPATH_JOIN_CHAR);
-    let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
+    let prefixStr = prefix.join(utils.JSONPATH_JOIN_CHAR);
+    let prefixArrayStr = [].concat(prefixArray, 'properties').join(utils.JSONPATH_JOIN_CHAR);
     let show = this.context.getOpenValue([prefixStr]);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let childUiSchema = utils.cloneObject(uiSchema);
@@ -503,7 +502,7 @@ class SchemaItem extends PureComponent {
               onChange={this.handleChangeType}
               value={value.type}
             >
-              {SCHEMA_TYPE.map((item, index) => {
+              {utils.SCHEMA_TYPE.map((item, index) => {
                 return (
                   <Option value={item} key={index}>
                     {item}
@@ -566,7 +565,7 @@ class SchemaItem extends PureComponent {
               value={uiSelect}
 
             >
-              {filterUiType(value.type, value.format).map((item, index) => {
+              {utils.filterUiType(value.type, value.format).map((item, index) => {
                 return (
                   <Option value={item.value} key={index}>
                     {item.label}
