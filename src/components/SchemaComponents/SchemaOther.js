@@ -58,6 +58,17 @@ class SchemaString extends PureComponent {
     }
   };
 
+  changeEnumOtherName = (value, data) => {
+    var arr = value.split('\n');
+    if (arr.length === 0 || (arr.length === 1 && !arr[0])) {
+      delete data.enum;
+      this.context.changeCustomValue(data);
+    } else {
+      data.enumNames = arr;
+      this.context.changeCustomValue(data);
+    }
+  };
+
   changeEnumDescOtherValue = (value, data) => {
     data.enumDesc = value;
     this.context.changeCustomValue(data);
@@ -161,6 +172,24 @@ class SchemaString extends PureComponent {
             />
           </Col>
         </Row>
+        {this.state.checked && (
+          <Row className="other-row" type="flex" align="middle">
+            <Col span={4} className="other-label">
+              <span>{LocalProvider('enum_name')}</span>
+            </Col>
+            <Col span={20}>
+              <TextArea
+                value={data.enumDesc}
+                disabled={!this.state.checked}
+                placeholder={LocalProvider('enum_msg')}
+                autosize={{ minRows: 2, maxRows: 6 }}
+                onChange={e => {
+                  this.changeEnumOtherName(e.target.value, data);
+                }}
+              />
+            </Col>
+          </Row>
+        )}
         {this.state.checked && (
           <Row className="other-row" type="flex" align="middle">
             <Col span={4} className="other-label">

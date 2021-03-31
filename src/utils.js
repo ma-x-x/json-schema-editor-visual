@@ -162,7 +162,7 @@ exports.isObject = isObject;
 const UI_TYPE = [
   { label: '输入框', value: 'input' },
   { label: '文本域', value: 'textarea' },
-  { label: '日期', value: 'date' },
+  { label: '日期', value: 'date', format:'date' },
   { label: '开关', value: 'switch' },
   { label: '单选框', value: 'radio' },
   { label: '复选框', value: 'checkbox' },
@@ -170,11 +170,12 @@ const UI_TYPE = [
   { label: '下拉多选', value: 'multiSelect' },
   { label: '日期范围', value: 'range' },
   { label: '滑动条', value: 'slider' },
-  { label: '图片展示', value: 'image' },
+  { label: '图片展示', value: 'image', format:'image' },
   { label: '颜色选择', value: 'color' },
   { label: '文件上传', value: 'upload' },
   { label: '组', value: 'object' },
   { label: '列表', value: 'array' },
+  { label: '是否选择', value: 'checkbox' },
 ];
 exports.UI_TYPE = UI_TYPE;
 

@@ -287,6 +287,13 @@ class jsonSchema extends React.Component {
     });
   };
 
+    //  修改弹窗中的json-schema 枚举对应中文值
+  changeCustomName = newValue => {
+      this.setState({
+        curItemCustomValue: newValue
+      });
+    };
+
   changeCheckBox = e => {
     this.setState({ checked: e });
     this.Model.requireAllAction({ required: e, value: this.props.schema });

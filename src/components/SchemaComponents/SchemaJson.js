@@ -351,7 +351,7 @@ class SchemaItem extends PureComponent {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
     this.Model.changeTypeAction({ key, value: value });
-    debugger;
+    
     // 修改ui
     let uiPrefix = this.getUiPrefix();
     const uiWidget = utils.filterUiTypeDefaultValue(value);
@@ -553,7 +553,7 @@ class SchemaItem extends PureComponent {
           <Col span={2} className="col-item col-item-ui">
             <Select
               className="type-select-style"
-              onChange={(value)=>this.handleChangeUiWidget(value, value.type)}
+              onChange={(sValue)=>this.handleChangeUiWidget(sValue, value.type)}
               value={uiSelect}
 
             >
@@ -567,7 +567,7 @@ class SchemaItem extends PureComponent {
             </Select>
           </Col>
 
-          <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
+          <Col span={2} className="col-item col-item-setting">
             <span className="adv-set" onClick={this.handleShowAdv}>
               <Tooltip placement="top" title={LocaleProvider('adv_setting')}>
                 <SettingOutlined />

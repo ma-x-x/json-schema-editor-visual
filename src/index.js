@@ -52,7 +52,7 @@ render(
 
     <JEditor1
       showEditor={true}
-      isMock={true}
+      isMock={false}
       isHeader={true}
       isHideRoot={false}
       options={options}
