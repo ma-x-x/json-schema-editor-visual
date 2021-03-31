@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@alifd/next": "^1.22.16",
     "@ant-design/compatible": "^1.0.8",

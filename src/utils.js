@@ -1,8 +1,8 @@
-const _ = require('underscore');
+import _ from 'underscore';
 
-exports.JSONPATH_JOIN_CHAR = '.';
-exports.lang = 'zh_CN';
-exports.format = [
+export const JSONPATH_JOIN_CHAR = '.';
+export const lang = 'zh_CN';
+export const format = [
   { name: 'date-time' },
   { name: 'date' },
   { name: 'email' },
@@ -12,8 +12,8 @@ exports.format = [
   { name: 'uri' }
 ];
 
-exports.SCHEMA_TYPE = ['string', 'number', 'array', 'object', 'boolean', 'integer'];
-const defaultSchema = {
+export const SCHEMA_TYPE = ['string', 'number', 'array', 'object', 'boolean', 'integer'];
+export const defaultSchema = {
   string: {
     type: 'string'
   },
@@ -37,13 +37,12 @@ const defaultSchema = {
     type: 'integer'
   }
 }
-exports.defaultSchema = defaultSchema;
 
 // 防抖函数，减少高频触发的函数执行的频率
 // 请在 constructor 里使用:
 
 // this.func = debounce(this.func, 400);
-exports.debounce = (func, wait) => {
+export const debounce = (func, wait) => {
   let timeout;
   return function () {
     clearTimeout(timeout);
@@ -51,17 +50,14 @@ exports.debounce = (func, wait) => {
   };
 };
 
-function getData(state, keys) {
+export function getData(state, keys) {
   let curState = state;
   for (let i = 0; i < keys.length; i++) {
     curState = curState[keys[i]];
   }
   return curState;
 }
-
-exports.getData = getData;
-
-exports.setData = function (state, keys, value) {
+export function setData(state, keys, value) {
   let curState = state;
   for (let i = 0; i < keys.length - 1; i++) {
     curState = curState[keys[i]];
@@ -69,7 +65,7 @@ exports.setData = function (state, keys, value) {
   curState[keys[keys.length - 1]] = value;
 };
 
-exports.deleteData = function (state, keys) {
+export function deleteData(state, keys) {
   let curState = state;
   for (let i = 0; i < keys.length - 1; i++) {
     curState = curState[keys[i]];
@@ -78,14 +74,14 @@ exports.deleteData = function (state, keys) {
   delete curState[keys[keys.length - 1]];
 };
 
-exports.getParentKeys = function (keys) {
+export function getParentKeys(keys) {
   if (keys.length === 1) return [];
   let arr = [].concat(keys);
   arr.splice(keys.length - 1, 1);
   return arr;
 };
 
-exports.clearSomeFields = function (keys, data) {
+export function clearSomeFields(keys, data) {
   const newData = Object.assign({}, data);
   keys.forEach(key => {
     delete newData[key];
@@ -100,7 +96,7 @@ function getFieldstitle(data) {
   return requiredtitle;
 }
 
-function handleSchemaRequired(schema, checked) {
+export function handleSchemaRequired(schema, checked) {
   // console.log(schema)
   if (schema.type === 'object') {
     let requiredtitle = getFieldstitle(schema.properties);
@@ -127,9 +123,7 @@ function handleObject(properties, checked) {
   }
 }
 
-exports.handleSchemaRequired = handleSchemaRequired;
-
-function cloneObject(obj) {
+export function cloneObject(obj) {
   if (typeof obj === 'object') {
     if (Array.isArray(obj)) {
       var newArr = [];
@@ -149,17 +143,14 @@ function cloneObject(obj) {
   }
 }
 
-exports.cloneObject = cloneObject;
-
 function stringContains(str, text) {
   return str.indexOf(text) > -1;
 }
 
-const isObject = a =>
+export const isObject = a =>
   stringContains(Object.prototype.toString.call(a), 'Object');
-exports.isObject = isObject;
 /** 支持的展示形式 */
-const UI_TYPE = [
+export const UI_TYPE = [
   { label: '输入框', value: 'input' },
   { label: '文本域', value: 'textarea' },
   { label: '日期', value: 'date', format:'date' },
@@ -177,7 +168,6 @@ const UI_TYPE = [
   { label: '列表', value: 'array' },
   { label: '是否选择', value: 'checkbox' },
 ];
-exports.UI_TYPE = UI_TYPE;
 
 function filterStringUiType(format) {
   switch (format) {
@@ -189,7 +179,7 @@ function filterStringUiType(format) {
   }
 }
 
-function filterUiType(field, format) {
+export function filterUiType(field, format) {
   switch (field) {
     case 'number':
     case 'integer':
@@ -207,14 +197,12 @@ function filterUiType(field, format) {
   }
 }
 
-exports.filterUiType = filterUiType;
-
-function filterUiTypeDefaultValue(field) {
+export function filterUiTypeDefaultValue(field) {
   return filterUiType(field) && filterUiType(field)[0] && filterUiType(field)[0].value;
 }
 
 
-exports.defaultSchemaUi = function (field) {
+export function defaultSchemaUi(field) {
   return field === 'array' ? {
     'ui:widget': filterUiTypeDefaultValue(field),
     type:field,
@@ -225,10 +213,7 @@ exports.defaultSchemaUi = function (field) {
   } : { 'ui:widget': filterUiTypeDefaultValue(field), type:field }
 }
 
-exports.filterUiTypeDefaultValue = filterUiTypeDefaultValue;
-
-
-exports.getUiData = function getUiData(state, keys) {
+export  function getUiData(state, keys) {
   let curState = state;
   // for (let i = 0; i < keys.length; i++) {
   //   curState = curState ? curState[keys[i]] : {};
@@ -236,7 +221,7 @@ exports.getUiData = function getUiData(state, keys) {
   return curState;
 }
 
-exports.setUiData = function setUiData(state, keys, value, data) {
+export  function setUiData(state, keys, value, data) {
   let curState = state;
   if (keys.length === 0) {
     curState = Object.assign(curState, value);
@@ -248,7 +233,7 @@ exports.setUiData = function setUiData(state, keys, value, data) {
   }
 };
 
-exports.deleteUiData = function deleteUiData(state, keys) {
+export  function deleteUiData(state, keys) {
   // let curState = state;
   // for (let i = 0; i < keys.length - 1; i++) {
   //   curState = curState ? curState[keys[i]] : {};
@@ -287,7 +272,7 @@ function getChildren(schema) {
 // ----------------- schema 相关
 
 // 合并propsSchema和UISchema。由于两者的逻辑相关性，合并为一个大schema能简化内部处理
-function combineSchema(propsSchema = {}, uiSchema = {}) {
+export function combineSchema(propsSchema = {}, uiSchema = {}) {
   const propList = getChildren(propsSchema);
   const newList = propList.map(p => {
     const { name } = p;
@@ -327,8 +312,6 @@ function combineSchema(propsSchema = {}, uiSchema = {}) {
   }
   return { ...propsSchema, ...topLevelUi, properties: newObj };
 }
-
-exports.combineSchema = combineSchema;
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;

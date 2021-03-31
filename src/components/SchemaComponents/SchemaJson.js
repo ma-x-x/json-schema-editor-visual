@@ -262,7 +262,7 @@ class SchemaArray extends PureComponent {
           </Col>
 
 
-          <Col span={this.context.isMock ? 2 : 3} className="col-item col-item-setting">
+          <Col span={2} className="col-item col-item-setting">
             <span className="adv-set" onClick={this.handleShowAdv}>
               <Tooltip placement="top" title={LocaleProvider('adv_setting')}>
                 <SettingOutlined />
