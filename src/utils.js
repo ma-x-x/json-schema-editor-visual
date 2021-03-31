@@ -173,7 +173,7 @@ const UI_TYPE = [
   { label: '图片展示', value: 'image' },
   { label: '颜色选择', value: 'color' },
   { label: '文件上传', value: 'upload' },
-  { label: '对象', value: 'object' },
+  { label: '组', value: 'object' },
   { label: '列表', value: 'array' },
 ];
 exports.UI_TYPE = UI_TYPE;
@@ -286,7 +286,7 @@ function getChildren(schema) {
 // ----------------- schema 相关
 
 // 合并propsSchema和UISchema。由于两者的逻辑相关性，合并为一个大schema能简化内部处理
-export function combineSchema(propsSchema = {}, uiSchema = {}) {
+function combineSchema(propsSchema = {}, uiSchema = {}) {
   const propList = getChildren(propsSchema);
   const newList = propList.map(p => {
     const { name } = p;
@@ -326,6 +326,8 @@ export function combineSchema(propsSchema = {}, uiSchema = {}) {
   }
   return { ...propsSchema, ...topLevelUi, properties: newObj };
 }
+
+exports.combineSchema = combineSchema;
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;

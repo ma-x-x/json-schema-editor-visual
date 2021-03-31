@@ -8,13 +8,13 @@ export default {
     data: {},
   },
 
-  changeUiAction: function (state, action, oldState) {
-    const prefix = action.prefix; 
+  changeUiAction: function (state, action) {
+    const prefix = action.prefix;
     const uiWidgetObj = action.uiWidgetObj;
     const value = action.value;
     const dataType = action.type;
     let newKeys = prefix.map(item => item.key);
-    let newDataItem = _.isEmpty(uiWidgetObj) ? {"ui:widget": value,type:dataType} : uiWidgetObj;
+    let newDataItem = _.isEmpty(uiWidgetObj) ? { "ui:widget": value, type: dataType } : uiWidgetObj;
     utils.setUiData(state.data, newKeys, newDataItem);
   },
 
@@ -25,7 +25,7 @@ export default {
     let name = keys[keys.length - 1];
     let parentKeys = utils.getParentKeys(keys);
     let oldData = oldState.data;
-     let parentData = utils.getData(oldData, parentKeys);
+    let parentData = utils.getData(oldData, parentKeys);
     let newParentData = {};
     for (let i in parentData) {
       if (i !== name) {
@@ -40,7 +40,7 @@ export default {
     const uiPrefixMap = utils.cloneObject(action.uiPrefixMap);
     uiPrefixMap.push({
       key: currentNodeName,
-      type:'string'
+      type: 'string'
     })
     let keys = uiPrefixMap.map(item => item.key);
     let newPropertiesData = utils.defaultSchemaUi('string');
@@ -52,7 +52,7 @@ export default {
     const uiPrefixMap = utils.cloneObject(action.uiPrefixMap);
     uiPrefixMap.push({
       key: currentNodeName,
-      type:'string'
+      type: 'string'
     })
     let keys = uiPrefixMap.map(item => item.key);
     let newPropertiesData = utils.defaultSchemaUi('string');

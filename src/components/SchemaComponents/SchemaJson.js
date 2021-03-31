@@ -351,7 +351,7 @@ class SchemaItem extends PureComponent {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
     this.Model.changeTypeAction({ key, value: value });
-
+    debugger;
     // 修改ui
     let uiPrefix = this.getUiPrefix();
     const uiWidget = utils.filterUiTypeDefaultValue(value);
@@ -411,9 +411,9 @@ class SchemaItem extends PureComponent {
   };
 
   // 修改展示UI
-  handleChangeUiWidget = value => {
+  handleChangeUiWidget = (value,type) => {
     let prefix = this.getUiPrefix();
-    this.UiModel.changeUiAction({ prefix: prefix, key: this.props.name, value, type: this.props.data.type });
+    this.UiModel.changeUiAction({ prefix: prefix, key: this.props.name, value, type:type });
   }
 
   // 修改分组
@@ -446,7 +446,7 @@ class SchemaItem extends PureComponent {
         uiSelect = childUiSchema && childUiSchema['ui:widget'];
       }
     });
-    console.log('uiSelect', uiSelect, 'data', data);
+    console.log('uiSelect', uiSelect, 'value', value);
 
     return show ? (
       <div>
@@ -553,7 +553,7 @@ class SchemaItem extends PureComponent {
           <Col span={2} className="col-item col-item-ui">
             <Select
               className="type-select-style"
-              onChange={this.handleChangeUiWidget}
+              onChange={(value)=>this.handleChangeUiWidget(value, value.type)}
               value={uiSelect}
 
             >

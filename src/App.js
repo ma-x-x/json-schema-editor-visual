@@ -310,8 +310,11 @@ class jsonSchema extends React.Component {
 
     console.log('schema', schema);
 
+    
+    delete uiSchema['type'];
+    delete uiSchema['ui:widget'];
+    
     console.log('uiSchema', uiSchema);
-
     let disabled =
       this.props.schema.type === 'object' || this.props.schema.type === 'array' ? false : true;
 
@@ -587,6 +590,7 @@ class jsonSchema extends React.Component {
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
                   value={uiSchema['ui:widget']}
+                  disabled={ schema.type==='object' }
                 >
                   {utils.filterUiType(schema.type).map((item, index) => {
                     return (
