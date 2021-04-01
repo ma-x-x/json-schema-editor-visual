@@ -32,7 +32,7 @@ import CustomItem from './components/SchemaComponents/SchemaOther.js';
 import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
-import SchemaRenderForm from './SchemaRenderForm'
+// import SchemaRenderForm from './SchemaRenderForm'
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 const utils = require('./utils');
 
@@ -418,10 +418,10 @@ class jsonSchema extends React.Component {
             </Button>
           ]}
         >
-          <SchemaRenderForm
+         { /*<SchemaRenderForm
             schema={schema}
             uiSchema={uiSchema}
-          />
+         />*/}
         </Modal>
 
         {advVisible && (

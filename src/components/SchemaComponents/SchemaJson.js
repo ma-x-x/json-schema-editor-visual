@@ -36,6 +36,7 @@ const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
   let newUiPrefixMap = utils.cloneObject(uiPrefixMap);
   if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
     let key = name[name.length - 1];
+    console.log('key',key)
     newUiPrefixMap.push({
       key,
       type: data.type
@@ -138,6 +139,7 @@ class SchemaArray extends PureComponent {
 
   // 修改展示UI
   handleChangeUiWidget = value => {
+    debugger;
     let prefix = this.getUiPrefix();
     this.UiModel.changeUiAction({ prefix: prefix, key: 'items', value, type: this.props.data.type });
   }
@@ -151,8 +153,7 @@ class SchemaArray extends PureComponent {
   }
 
   getUiPrefix() {
-    const { name, data } = this.props;
-    return [].concat(this.props.uiPrefixMap, { key: name, type: data.type });
+    return this.props.uiPrefixMap;
   }
 
   render() {

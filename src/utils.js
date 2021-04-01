@@ -173,7 +173,7 @@ function filterStringUiType(format) {
   switch (format) {
     case 'date':
     case 'date-time':
-      return _.filter(UI_TYPE, (item) => ['输入框', '日期'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框', '日期', '日期范围'].includes(item.label));
     default:
       return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期选择', '单选框', '下拉单选', '图片展示',  '文件上传'].includes(item.label));
   }
@@ -183,11 +183,11 @@ export function filterUiType(field, format) {
   switch (field) {
     case 'number':
     case 'integer':
-      return _.filter(UI_TYPE, (item) => ['输入框'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框','滑动条'].includes(item.label));
     case 'string':
       return filterStringUiType(format);
     case 'array':
-      return _.filter(UI_TYPE, (item) => ['列表','复选框', '下拉多选', '日期范围'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['列表','复选框', '下拉多选'].includes(item.label));
     case 'boolean':
       return _.filter(UI_TYPE, (item) => ['是否选择', '开关'].includes(item.label));
     case 'object':

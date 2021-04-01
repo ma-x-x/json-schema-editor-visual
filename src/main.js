@@ -7,6 +7,8 @@ import uiSchema from './models/uiSchema'
 import PropTypes from 'prop-types'
 const utils = require('./utils');
 
+export { default as FormRender } from 'form-render/lib/antd';
+
 export default  (config = {})=>{
   if(config.lang) utils.lang = config.lang;
   
@@ -42,4 +44,3 @@ export default  (config = {})=>{
   return Component;
 
 }
-
