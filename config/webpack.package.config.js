@@ -40,6 +40,6 @@ module.exports = {
     { redux: { commonjs: "redux", commonjs2: "redux", amd: 'redux'} },
     { "prop-types": { commonjs: "prop-types", commonjs2: "prop-types",amd: 'prop-types' } },
     { antd: { commonjs: "antd", commonjs2: "antd", amd: 'antd' } },
-    // { "form-render": { commonjs: "form-render", commonjs2: "form-render", amd: 'form-render' } }
+    { "form-render": { commonjs: "form-render", commonjs2: "form-render", amd: 'form-render' } }
   ]
 };
