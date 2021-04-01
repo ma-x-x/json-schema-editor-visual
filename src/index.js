@@ -1,74 +1,46 @@
-import React from 'react';
-import { render } from 'react-dom';
-import 'antd/dist/antd.css';
-import jeditor from './main';
+import React from 'react'
+import { Provider } from 'react-redux'
+import App from './App.js'
+import moox from 'moox'
+import schema from './models/schema'
+import uiSchema from './models/uiSchema'
+import PropTypes from 'prop-types'
+const utils = require('./utils');
 
-// if (process.env.NODE_ENV !== 'production') {
-  // window.Perf = require('react-addons-perf');
-// }
-//import '../dist/main.css'
-// const jeditor = require('./main.js');
-const mock = [
-  { name: '字符串', mock: '@string' },
-  { name: '自然数', mock: '@natural' },
-  { name: '浮点数', mock: '@float' },
-  { name: '字符', mock: '@character' },
-  { name: '布尔', mock: '@boolean' },
-  { name: 'url', mock: '@url' },
-  { name: '域名', mock: '@domain' },
-  { name: 'ip地址', mock: '@ip' },
-  { name: 'id', mock: '@id' },
-  { name: 'guid', mock: '@guid' },
-  { name: '当前时间', mock: '@now' },
-  { name: '时间戳', mock: '@timestamp' }
-];
+export { default as FormRender } from 'form-render/lib/antd';
 
-const JEditor1 = jeditor({mock: mock});
+export default  (config = {})=>{
+  if(config.lang) utils.lang = config.lang;
+  
+  const Model = moox({
+    schema,
+    uiSchema
+  })
+  if(config.format){
+    Model.__jsonSchemaFormat = config.format
+  } else {
+    Model.__jsonSchemaFormat = utils.format
+  }
 
-const options = { lang: 'zh_CN' };
+  if(config.mock) {
+    Model.__jsonSchemaMock = config.mock
+  }
 
-render(
-  <div>
-    <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual" rel="noreferrer">
-      <h1>JSON-Schema-Editor</h1>
-    </a>
-    <p style={{ fontSize: '16px' }}>
-      A json-schema editor of high efficient and easy-to-use, base on React.{' '}
-      <a target="_blank" href="https://github.com/YMFE/json-schema-editor-visual" rel="noreferrer">
-        Github
-      </a>
-    </p>
-    <br />
-    <h3>
-      该工具已被用于开源接口管理平台：{' '}
-      <a target="_blank" href="https://github.com/ymfe/yapi" rel="noreferrer">
-        YApi
-      </a>
-    </h3>
+  
 
-    <br />
-    <h2>Example:</h2>
-    <hr />
+  const store = Model.getStore();
 
-    <JEditor1
-      showEditor={true}
-      isMock={false}
-      isHeader={true}
-      isHideRoot={false}
-      options={options}
-      data={''}
-      onChange={e => {
-        console.log('changeValue', e);
-      }}
-    />
+  const Component = (props)=>{
+    return <Provider store={store} className="wrapper">
+      <App Model={Model} {...props} />
+    </Provider>
+  }
 
-    {/* <JEditor2
-      showEditor={true}
-      data={null}
-      onChange={e => {
-        // console.log("changeValue", e);
-      }}
-    /> */}
-  </div>,
-  document.getElementById('root')
-);
+  Component.propTypes = {
+    data: PropTypes.string,
+    onChange: PropTypes.func,
+    showEditor: PropTypes.bool
+  }
+  return Component;
+
+}
