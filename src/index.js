@@ -4,13 +4,11 @@ import App from './App.js'
 import moox from 'moox'
 import schema from './models/schema'
 import uiSchema from './models/uiSchema'
-import PropTypes from 'prop-types'
-const utils = require('./utils');
-
-export { default as FormRender } from 'form-render/lib/antd';
+import PropTypes from 'prop-types';
+import { setLang , format } from './utils';
 
 export default  (config = {})=>{
-  if(config.lang) utils.lang = config.lang;
+  if(config.lang) setLang(config.lang);
   
   const Model = moox({
     schema,
@@ -19,7 +17,7 @@ export default  (config = {})=>{
   if(config.format){
     Model.__jsonSchemaFormat = config.format
   } else {
-    Model.__jsonSchemaFormat = utils.format
+    Model.__jsonSchemaFormat = format
   }
 
   if(config.mock) {

@@ -1,4 +1,6 @@
-const utils = require('../../utils');
+import { getLang } from '../../utils';
+
+let lang = getLang();
 
 const langs = {
   en_US: {
@@ -82,7 +84,7 @@ const langs = {
 }
 
 export default (message) => {
-  return langs[utils.lang][message]
+  return langs[lang][message]
 }
 
 

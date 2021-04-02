@@ -23,17 +23,17 @@ import {
 } from 'antd';
 import FieldInput from './FieldInput'
 import './schemaJson.css';
-import _ from 'underscore';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LocaleProvider from '../LocalProvider/index.js';
 import MockSelect from '../MockSelect/index.js';
-const utils = require('../../utils');
+import {cloneObject,filterUiTypeDefaultValue,defaultSchemaUi,JSONPATH_JOIN_CHAR,SCHEMA_TYPE,filterUiType } from '../../utils';
 
 const Option = Select.Option;
 
 const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
-  let newUiPrefixMap = utils.cloneObject(uiPrefixMap);
+  let newUiPrefixMap = cloneObject(uiPrefixMap);
   if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
     let key = name[name.length - 1];
     console.log('key',key)
@@ -85,8 +85,8 @@ class SchemaArray extends PureComponent {
     
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const uiWidget = utils.filterUiTypeDefaultValue(value);
-    const uiWidgetObj = utils.defaultSchemaUi(value);
+    const uiWidget = filterUiTypeDefaultValue(value);
+    const uiWidgetObj = defaultSchemaUi(value);
     this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
   };
 
@@ -161,10 +161,10 @@ class SchemaArray extends PureComponent {
     const items = data.items;
     let prefixArray = [].concat(prefix, 'items');
 
-    let prefixArrayStr = [].concat(prefixArray, 'properties').join(utils.JSONPATH_JOIN_CHAR);
+    let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let uiSelect = '';
-    let childUiSchema = utils.cloneObject(uiSchema);
+    let childUiSchema =cloneObject(uiSchema);
     uiPrefixMap.forEach((item, index) => {
       childUiSchema = childUiSchema[item.key];
       if (index === uiPrefixMap.length - 1) {
@@ -203,7 +203,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeType}
               value={items.type}
             >
-              {utils.SCHEMA_TYPE.map((item, index) => {
+              {SCHEMA_TYPE.map((item, index) => {
                 return (
                   <Option value={item} key={index}>
                     {item}
@@ -252,7 +252,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeUiWidget}
               value={uiSelect}
             >
-              {utils.filterUiType(items.type, items.format).map((item, index) => {
+              {filterUiType(items.type, items.format).map((item, index) => {
                 return (
                   <Option value={item.value} key={index}>
                     {item.label}
@@ -355,8 +355,8 @@ class SchemaItem extends PureComponent {
     
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const uiWidget = utils.filterUiTypeDefaultValue(value);
-    const uiWidgetObj = utils.defaultSchemaUi(value);
+    const uiWidget = filterUiTypeDefaultValue(value);
+    const uiWidgetObj = defaultSchemaUi(value);
     this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
   };
 
@@ -435,11 +435,11 @@ class SchemaItem extends PureComponent {
     let value = data.properties[name];
     let prefixArray = [].concat(prefix, name);
     let uiPrefixMapArray = [].concat(uiPrefixMap, [{ key: name, type: 'string' }]);
-    let prefixStr = prefix.join(utils.JSONPATH_JOIN_CHAR);
-    let prefixArrayStr = [].concat(prefixArray, 'properties').join(utils.JSONPATH_JOIN_CHAR);
+    let prefixStr = prefix.join(JSONPATH_JOIN_CHAR);
+    let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let show = this.context.getOpenValue([prefixStr]);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
-    let childUiSchema = utils.cloneObject(uiSchema);
+    let childUiSchema =cloneObject(uiSchema);
     let uiSelect = '';
     uiPrefixMapArray.forEach((item, index) => {
       childUiSchema = childUiSchema[item.key];
@@ -495,7 +495,7 @@ class SchemaItem extends PureComponent {
               onChange={this.handleChangeType}
               value={value.type}
             >
-              {utils.SCHEMA_TYPE.map((item, index) => {
+              {SCHEMA_TYPE.map((item, index) => {
                 return (
                   <Option value={item} key={index}>
                     {item}
@@ -558,7 +558,7 @@ class SchemaItem extends PureComponent {
               value={uiSelect}
 
             >
-              {utils.filterUiType(value.type, value.format).map((item, index) => {
+              {filterUiType(value.type, value.format).map((item, index) => {
                 return (
                   <Option value={item.value} key={index}>
                     {item.label}

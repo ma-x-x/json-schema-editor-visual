@@ -1,7 +1,16 @@
-import _ from 'underscore';
+import _ from 'lodash';
+
+let lang = 'zh_CN';
+
+export function setLang(configLang){
+  lang = configLang;
+}
+
+export function getLang(){
+  return lang;
+}
 
 export const JSONPATH_JOIN_CHAR = '.';
-export const lang = 'zh_CN';
 export const format = [
   { name: 'date-time' },
   { name: 'date' },

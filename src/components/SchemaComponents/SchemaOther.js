@@ -12,7 +12,7 @@ import {
   Switch,
 } from 'antd';
 import './schemaJson.css';
-import _ from 'underscore';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import AceEditor from '../AceEditor/AceEditor.js';
 import LocalProvider from '../LocalProvider/index.js';

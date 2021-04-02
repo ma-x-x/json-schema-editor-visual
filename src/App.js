@@ -33,8 +33,8 @@ import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
 import SchemaRenderForm from './SchemaRenderForm'
+import { debounce, getData, filterUiTypeDefaultValue, defaultSchemaUi, SCHEMA_TYPE, filterUiType } from './utils';
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
-const utils = require('./utils');
 
 const Option = Select.Option;
 const { TextArea } = Input;
@@ -47,7 +47,7 @@ const TabPane = Tabs.TabPane;
 class jsonSchema extends React.Component {
   constructor(props) {
     super(props);
-    this.alterMsg = utils.debounce(this.alterMsg, 2000);
+    this.alterMsg = debounce(this.alterMsg, 2000);
     this.state = {
       visible: false,
       show: true,
@@ -134,7 +134,7 @@ class jsonSchema extends React.Component {
   getChildContext() {
     return {
       getOpenValue: keys => {
-        return utils.getData(this.props.open, keys);
+        return getData(this.props.open, keys);
       },
       changeCustomValue: this.changeCustomValue,
       Model: this.props.Model,
@@ -163,8 +163,8 @@ class jsonSchema extends React.Component {
   // 修改数据类型
   changeType = (key, value) => {
     this.Model.changeTypeAction({ key: [key], value });
-    const uiWidget = utils.filterUiTypeDefaultValue(value);
-    const uiWidgetObj = utils.defaultSchemaUi(value);
+    const uiWidget = filterUiTypeDefaultValue(value);
+    const uiWidgetObj = defaultSchemaUi(value);
     this.UiModel.changeUiAction({ prefix: [], uiWidgetObj, value: uiWidget, type: value });
   };
 
@@ -202,7 +202,7 @@ class jsonSchema extends React.Component {
 
   // 修改uiSchema
   changeUiWidget = (key, value) => {
-    this.UiModel.changeUiAction({ prefix: [], value,type: this.props.schema.type });
+    this.UiModel.changeUiAction({ prefix: [], value, type: this.props.schema.type });
   }
 
   // 备注/mock弹窗 点击ok 时
@@ -287,12 +287,12 @@ class jsonSchema extends React.Component {
     });
   };
 
-    //  修改弹窗中的json-schema 枚举对应中文值
+  //  修改弹窗中的json-schema 枚举对应中文值
   changeCustomName = newValue => {
-      this.setState({
-        curItemCustomValue: newValue
-      });
-    };
+    this.setState({
+      curItemCustomValue: newValue
+    });
+  };
 
   changeCheckBox = e => {
     this.setState({ checked: e });
@@ -317,10 +317,10 @@ class jsonSchema extends React.Component {
 
     console.log('schema', schema);
 
-    
+
     delete uiSchema['type'];
     delete uiSchema['ui:widget'];
-    
+
     console.log('uiSchema', uiSchema);
     let disabled =
       this.props.schema.type === 'object' || this.props.schema.type === 'array' ? false : true;
@@ -418,10 +418,10 @@ class jsonSchema extends React.Component {
             </Button>
           ]}
         >
-         <SchemaRenderForm
+          <SchemaRenderForm
             schema={schema}
             uiSchema={uiSchema}
-         />
+          />
         </Modal>
 
         {advVisible && (
@@ -541,7 +541,7 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeType(`type`, e)}
                   value={schema.type}
                 >
-                  {utils.SCHEMA_TYPE.map((item, index) => {
+                  {SCHEMA_TYPE.map((item, index) => {
                     return (
                       <Option value={item} key={index}>
                         {item}
@@ -597,9 +597,9 @@ class jsonSchema extends React.Component {
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
                   value={uiSchema['ui:widget']}
-                  disabled={ schema.type==='object' }
+                  disabled={schema.type === 'object'}
                 >
-                  {utils.filterUiType(schema.type).map((item, index) => {
+                  {filterUiType(schema.type).map((item, index) => {
                     return (
                       <Option value={item.value} key={index}>
                         {item.label}

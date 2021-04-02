@@ -1,7 +1,3 @@
-
-
-module.exports = handleSchema;
-
 function handleType(schema) {
   if(!schema.type && schema.properties && typeof schema.properties === 'object') {
     
@@ -33,3 +29,5 @@ function handleObject(properties) {
   }
 }
 
+
+export default handleSchema;
