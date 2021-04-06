@@ -24,8 +24,7 @@ const peerDependencies = [
   "prop-types", 
   /^antd\/.+$/,
 	/^form-render\/.+$/,
-	/^@ant-design\/.+$/,
-	/^brace\/.+$/
+	/^@ant-design\/.+$/
 ]
 
 export default {

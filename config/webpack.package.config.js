@@ -66,8 +66,7 @@ module.exports = {
     { "form-render": { commonjs: "form-render", commonjs2: "form-render", amd: 'form-render', root: ['FormRender'] } },
     // 匹配以 "library/" 开始的所有依赖
     /^antd\/.+$/,
-	/^form-render\/.+$/,
-	/^@ant-design\/.+$/,
-	/^brace\/.+$/
+    /^form-render\/.+$/,
+    /^@ant-design\/.+$/
   ]
 };
