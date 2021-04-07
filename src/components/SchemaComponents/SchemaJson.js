@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LocaleProvider from '../LocalProvider/index.js';
 import MockSelect from '../MockSelect/index.js';
-import {cloneObject,filterUiTypeDefaultValue,defaultSchemaUi,JSONPATH_JOIN_CHAR,SCHEMA_TYPE,filterUiType } from '../../utils';
+import {cloneObject,filterUiTypeDefaultValue,JSONPATH_JOIN_CHAR,SCHEMA_TYPE,filterUiType,getUiObjByUiKey } from '../../utils';
 
 const Option = Select.Option;
 
@@ -85,9 +85,8 @@ class SchemaArray extends PureComponent {
     
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const uiWidget = filterUiTypeDefaultValue(value);
-    const uiWidgetObj = defaultSchemaUi(value);
-    this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
+    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    this.UiModel.changeUiAction({ prefix: uiPrefix, uiKey, value: uiValue, type: value });
   };
 
   // 修改备注信息
@@ -139,9 +138,9 @@ class SchemaArray extends PureComponent {
 
   // 修改展示UI
   handleChangeUiWidget = value => {
-    debugger;
     let prefix = this.getUiPrefix();
-    this.UiModel.changeUiAction({ prefix: prefix, key: 'items', value, type: this.props.data.type });
+    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    this.UiModel.changeUiAction({ prefix: prefix, key: 'items', uiKey, value: uiValue, type: this.props.data.type });
   }
 
   // 修改分组
@@ -168,7 +167,7 @@ class SchemaArray extends PureComponent {
     uiPrefixMap.forEach((item, index) => {
       childUiSchema = childUiSchema[item.key];
       if (index === uiPrefixMap.length - 1) {
-        uiSelect =  childUiSchema && childUiSchema['ui:widget'];
+        uiSelect =  childUiSchema && childUiSchema['uiKey'];
       }
     });
     return !_.isUndefined(data.items) && (
@@ -254,7 +253,7 @@ class SchemaArray extends PureComponent {
             >
               {filterUiType(items.type, items.format).map((item, index) => {
                 return (
-                  <Option value={item.value} key={index}>
+                  <Option value={item.uiKey} key={index}>
                     {item.label}
                   </Option>
                 );
@@ -355,9 +354,8 @@ class SchemaItem extends PureComponent {
     
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const uiWidget = filterUiTypeDefaultValue(value);
-    const uiWidgetObj = defaultSchemaUi(value);
-    this.UiModel.changeUiAction({ prefix: uiPrefix, uiWidgetObj, value: uiWidget, type: value });
+    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    this.UiModel.changeUiAction({ prefix: uiPrefix, uiKey, value: uiValue, type: value });
   };
 
   // 删除节点
@@ -414,7 +412,8 @@ class SchemaItem extends PureComponent {
   // 修改展示UI
   handleChangeUiWidget = (value,type) => {
     let prefix = this.getUiPrefix();
-    this.UiModel.changeUiAction({ prefix: prefix, key: this.props.name, value, type:type });
+    const uiObj = getUiObjByUiKey(value);
+    this.UiModel.changeUiAction({ prefix: prefix,uiKey: value, value:_.get(uiObj,'value'), type:type });
   }
 
   // 修改分组
@@ -442,9 +441,9 @@ class SchemaItem extends PureComponent {
     let childUiSchema =cloneObject(uiSchema);
     let uiSelect = '';
     uiPrefixMapArray.forEach((item, index) => {
-      childUiSchema = childUiSchema[item.key];
+      childUiSchema = _.get(childUiSchema,item.key) ;
       if (index === uiPrefixMapArray.length - 1) {
-        uiSelect = childUiSchema && childUiSchema['ui:widget'];
+        uiSelect = _.get(childUiSchema,'uiKey')
       }
     });
     console.log('uiSelect', uiSelect, 'value', value);
@@ -560,7 +559,7 @@ class SchemaItem extends PureComponent {
             >
               {filterUiType(value.type, value.format).map((item, index) => {
                 return (
-                  <Option value={item.value} key={index}>
+                  <Option value={item.uiKey} key={index}>
                     {item.label}
                   </Option>
                 );

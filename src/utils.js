@@ -2,11 +2,11 @@ import _ from 'lodash';
 
 let lang = 'zh_CN';
 
-export function setLang(configLang){
+export function setLang(configLang) {
   lang = configLang;
 }
 
-export function getLang(){
+export function getLang() {
   return lang;
 }
 
@@ -100,7 +100,7 @@ export function clearSomeFields(keys, data) {
 
 function getFieldstitle(data) {
   const requiredtitle = [];
-  Object.keys(data).map(title =>requiredtitle.push(title));
+  Object.keys(data).map(title => requiredtitle.push(title));
 
   return requiredtitle;
 }
@@ -160,31 +160,34 @@ export const isObject = a =>
   stringContains(Object.prototype.toString.call(a), 'Object');
 /** 支持的展示形式 */
 export const UI_TYPE = [
-  { label: '输入框', value: 'input' },
-  { label: '文本域', value: 'textarea' },
-  { label: '日期', value: 'date', format:'date' },
-  { label: '开关', value: 'switch' },
-  { label: '单选框', value: 'radio' },
-  { label: '复选框', value: 'checkbox' },
-  { label: '下拉单选', value: 'select' },
-  { label: '下拉多选', value: 'multiSelect' },
-  { label: '日期范围', value: 'range' },
-  { label: '滑动条', value: 'slider' },
-  { label: '图片展示', value: 'image', format:'image' },
-  { label: '颜色选择', value: 'color' },
-  { label: '文件上传', value: 'upload' },
-  { label: '组', value: 'object' },
-  { label: '列表', value: 'array' },
-  { label: '是否选择', value: 'checkbox' },
+  { label: '输入框', value: 'input', uiKey: 'string-input' },
+  { label: '数字输入框', value: 'number', uiKey: 'string-number' },
+  { label: '滑动条', value: 'slider', uiKey: 'string-slider' },
+  { label: '文本域', value: 'textarea', uiKey: 'string-textarea' },
+  { label: '图片展示', value: 'image', format: 'image', uiKey: 'string-image' },
+  { label: '颜色选择', value: 'color', uiKey: 'string-color' },
+  { label: '日期选择', value: 'date', format: 'date', uiKey: 'string-date' },
+  { label: '日期时间', value: 'date', format: 'dateTime', uiKey: 'string-dateTime' },
+  { label: '单选框', value: 'radio', uiKey: 'string-radio' },
+  { label: '复选框', value: 'checkbox', uiKey: 'string-checkbox' },
+  { label: '下拉单选', value: 'select', uiKey: 'string-select' },
+  { label: '下拉多选', value: 'multiSelect', uiKey: 'string-multiSelect' },
+  { label: '文件上传', value: 'upload', uiKey: 'string-upload' },
+  { label: '是否选择', value: 'checkbox', uiKey: 'boolean-checkbox' },
+  { label: '开关', value: 'switch', uiKey: 'boolean-switch' },
+  { label: '日期范围', value: 'range', uiKey: 'array-range' },
+  { label: '组', value: 'object', uiKey: 'object' },
+  { label: '列表', value: 'array', uiKey: 'array' },
 ];
 
 function filterStringUiType(format) {
   switch (format) {
     case 'date':
-    case 'date-time':
-      return _.filter(UI_TYPE, (item) => ['输入框', '日期', '日期范围'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['日期选择'].includes(item.label));
+    // case 'date-time':
+    //   return _.filter(UI_TYPE, (item) => ['日期时间'].includes(item.label));
     default:
-      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期选择', '单选框', '下拉单选', '图片展示',  '文件上传'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期选择', '单选框','复选框', '下拉单选','下拉多选', '图片展示', '文件上传'].includes(item.label));
   }
 }
 
@@ -192,37 +195,45 @@ export function filterUiType(field, format) {
   switch (field) {
     case 'number':
     case 'integer':
-      return _.filter(UI_TYPE, (item) => ['输入框','滑动条'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['数字输入框', '滑动条'].includes(item.label));
     case 'string':
       return filterStringUiType(format);
     case 'array':
-      return _.filter(UI_TYPE, (item) => ['列表','复选框', '下拉多选'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['列表'].includes(item.label));
     case 'boolean':
       return _.filter(UI_TYPE, (item) => ['是否选择', '开关'].includes(item.label));
     case 'object':
       return _.filter(UI_TYPE, (item) => ['组'].includes(item.label));
     default:
-      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期', '单选框', '下拉单选', '图片展示', '文件上传'].includes(item.label));
+      return _.filter(UI_TYPE, (item) => ['输入框', '文本域', '日期选择', '单选框', '下拉单选', '图片展示', '文件上传'].includes(item.label));
   }
 }
 
-export function filterUiTypeDefaultValue(field) {
-  return filterUiType(field) && filterUiType(field)[0] && filterUiType(field)[0].value;
+export function filterUiTypeDefaultValue(field, format) {
+  return filterUiType(field) && filterUiType(field)[0] && filterUiType(field)[0] ? {
+    uiKey: filterUiType(field, format)[0].uiKey,
+    uiValue: filterUiType(field, format)[0].value,
+    uiFormat: filterUiType(field, format)[0].format,
+  } : {};
+}
+
+export function getUiObjByUiKey(uiKey) {
+  return _.find(UI_TYPE, { uiKey });
 }
 
 
 export function defaultSchemaUi(field) {
   return field === 'array' ? {
     'ui:widget': filterUiTypeDefaultValue(field),
-    type:field,
+    type: field,
     items: {
       'ui:widget': filterUiTypeDefaultValue('string'),
-      type:'string'
+      type: 'string'
     }
-  } : { 'ui:widget': filterUiTypeDefaultValue(field), type:field }
+  } : { 'ui:widget': filterUiTypeDefaultValue(field), type: field }
 }
 
-export  function getUiData(state, keys) {
+export function getUiData(state, keys) {
   let curState = state;
   // for (let i = 0; i < keys.length; i++) {
   //   curState = curState ? curState[keys[i]] : {};
@@ -230,19 +241,20 @@ export  function getUiData(state, keys) {
   return curState;
 }
 
-export  function setUiData(state, keys, value, data) {
+export function setUiData(state, keys, value, isDelete) {
   let curState = state;
+  console.log(' keys, value, isDelete', keys, value, isDelete);
   if (keys.length === 0) {
-    curState = Object.assign(curState, value);
+    curState = Object.assign(isDelete ? {}: curState, value);
   } else {
     for (let i = 0; i < keys.length - 1; i++) {
       curState = curState ? curState[keys[i]] : {};
     }
-    curState[keys[keys.length - 1]] = value;
+    curState && (curState[keys[keys.length - 1]] = value);
   }
 };
 
-export  function deleteUiData(state, keys) {
+export function deleteUiData(state, keys) {
   // let curState = state;
   // for (let i = 0; i < keys.length - 1; i++) {
   //   curState = curState ? curState[keys[i]] : {};

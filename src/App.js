@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from 'lodash';
 import {
   CaretDownOutlined,
   CaretRightOutlined,
@@ -33,7 +33,7 @@ import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
 import SchemaRenderForm from './SchemaRenderForm'
-import { debounce, getData, filterUiTypeDefaultValue, defaultSchemaUi, SCHEMA_TYPE, filterUiType } from './utils';
+import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType } from './utils';
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 
 const Option = Select.Option;
@@ -61,6 +61,7 @@ class jsonSchema extends React.Component {
       editorModalName: '', // 弹窗名称desctiption | mock
       mock: '',
       previewVisible: false,
+      uiItemKey: [],
     };
     this.Model = this.props.Model.schema;
     this.UiModel = this.props.Model.uiSchema;
@@ -163,9 +164,8 @@ class jsonSchema extends React.Component {
   // 修改数据类型
   changeType = (key, value) => {
     this.Model.changeTypeAction({ key: [key], value });
-    const uiWidget = filterUiTypeDefaultValue(value);
-    const uiWidgetObj = defaultSchemaUi(value);
-    this.UiModel.changeUiAction({ prefix: [], uiWidgetObj, value: uiWidget, type: value });
+    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    this.UiModel.changeUiAction({ prefix: [], uiKey, value: uiValue, type: value });
   };
 
   handleImportJson = e => {
@@ -202,7 +202,9 @@ class jsonSchema extends React.Component {
 
   // 修改uiSchema
   changeUiWidget = (key, value) => {
-    this.UiModel.changeUiAction({ prefix: [], value, type: this.props.schema.type });
+    const uiObj = getUiObjByUiKey(value);
+    this.UiModel.changeUiAction({
+      prefix: [], type: this.props.schema.type,uiKey: value, value:_.get(uiObj,'value')});
   }
 
   // 备注/mock弹窗 点击ok 时
@@ -257,9 +259,16 @@ class jsonSchema extends React.Component {
       this.Model.changeEditorSchemaAction({
         value: this.state.curItemCustomValue
       });
+        this.UiModel.changeEditorUiSchemaAction({
+          value: this.state.curItemCustomValue
+        });
     } else {
       this.Model.changeValueAction({
         key: this.state.itemKey,
+        value: this.state.curItemCustomValue
+      });
+      this.UiModel.changeUiValueAction({
+        key: this.state.uiItemKey,
         value: this.state.curItemCustomValue
       });
     }
@@ -280,8 +289,17 @@ class jsonSchema extends React.Component {
     });
   };
 
+  /** 点击高级设置时，记录操作的uiSchema节点 */
+  setCurUiItem = (key, value) => {
+    this.setState({
+      uiItemKey: key
+    });
+  };
+
+
   //  修改弹窗中的json-schema 值
   changeCustomValue = newValue => {
+    console.log('newValue',newValue);
     this.setState({
       curItemCustomValue: newValue
     });
@@ -316,10 +334,6 @@ class jsonSchema extends React.Component {
     const { schema, uiSchema } = this.props;
 
     console.log('schema', schema);
-
-
-    delete uiSchema['type'];
-    delete uiSchema['ui:widget'];
 
     console.log('uiSchema', uiSchema);
     let disabled =
@@ -596,12 +610,12 @@ class jsonSchema extends React.Component {
                 <Select
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
-                  value={uiSchema['ui:widget']}
+                  value={uiSchema['uiKey'] }
                   disabled={schema.type === 'object'}
                 >
                   {filterUiType(schema.type).map((item, index) => {
                     return (
-                      <Option value={item.value} key={index}>
+                      <Option value={item.uiKey} key={index}>
                         {item.label}
                       </Option>
                     );
@@ -609,7 +623,10 @@ class jsonSchema extends React.Component {
                 </Select>
               </Col>
               <Col span={2} className="col-item col-item-setting">
-                <span className="adv-set" onClick={() => this.showAdv([], this.props.schema)}>
+                <span className="adv-set" onClick={() => {
+                  this.showAdv([], this.props.schema);
+                  this.setCurUiItem([], this.props.uiSchema);
+                }}>
                   <Tooltip placement="top" title={LocalProvider('adv_setting')}>
                     <SettingOutlined />
                   </Tooltip>
