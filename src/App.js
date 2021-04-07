@@ -33,7 +33,7 @@ import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
 import SchemaRenderForm from './SchemaRenderForm'
-import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType } from './utils';
+import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType,expandUiType } from './utils';
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 
 const Option = Select.Option;
@@ -48,6 +48,8 @@ class jsonSchema extends React.Component {
   constructor(props) {
     super(props);
     this.alterMsg = debounce(this.alterMsg, 2000);
+    const customWidgets = props.customWidgets;
+    expandUiType(customWidgets);
     this.state = {
       visible: false,
       show: true,
@@ -331,7 +333,8 @@ class jsonSchema extends React.Component {
       previewVisible
     } = this.state;
 
-    const { schema, uiSchema } = this.props;
+    const { schema, uiSchema, widgets } = this.props;
+    console.log('widgets',widgets);
 
     console.log('schema', schema);
 
@@ -435,6 +438,7 @@ class jsonSchema extends React.Component {
           <SchemaRenderForm
             schema={schema}
             uiSchema={uiSchema}
+            widgets={widgets}
           />
         </Modal>
 
@@ -669,7 +673,9 @@ jsonSchema.propTypes = {
   showEditor: PropTypes.bool,
   isMock: PropTypes.bool,
   Model: PropTypes.object,
-  UiModel: PropTypes.object
+  UiModel: PropTypes.object,
+  widgets: PropTypes.object,
+  customWidgets: PropTypes.array
 };
 
 export default connect(state => ({

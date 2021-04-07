@@ -3,8 +3,13 @@ import { render } from 'react-dom';
 import 'antd/dist/antd.css';
 import jeditor from '.';
 
+import SearchInput from './components/customWidget/SearchInput';
+
+const customWidgets = [{label: '自定义搜索框', value: 'SearchInput', uiKey: "string-searchInput",  type: ['string', 'boolean'] }]
+const widgets = { SearchInput }
+
 // if (process.env.NODE_ENV !== 'production') {
-  // window.Perf = require('react-addons-perf');
+// window.Perf = require('react-addons-perf');
 // }
 //import '../dist/main.css'
 // const jeditor = require('./main.js');
@@ -23,7 +28,7 @@ const mock = [
   { name: '时间戳', mock: '@timestamp' }
 ];
 
-const JEditor1 = jeditor({mock: mock});
+const JEditor1 = jeditor({ mock: mock, customWidgets });
 
 const options = { lang: 'zh_CN' };
 
@@ -57,6 +62,8 @@ render(
       isHideRoot={false}
       options={options}
       data={''}
+      customWidgets={customWidgets}
+      widgets={{ SearchInput }}
       onChange={e => {
         console.log('changeValue', e);
       }}

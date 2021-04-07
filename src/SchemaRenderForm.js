@@ -5,7 +5,7 @@ import FormRender from 'form-render/lib/antd';
 // import FormRender from 'form-render/lib/fusion';
 // import '@alifd/next/dist/next.min.css';
 
-function SchemaRenderForm({ schema,uiSchema }) {
+function SchemaRenderForm({ schema,uiSchema,widgets }) {
   const [formData, setData] = useState({});
   const [valid, setValid] = useState([]);
   const submit = () => {
@@ -15,15 +15,17 @@ function SchemaRenderForm({ schema,uiSchema }) {
       alert(JSON.stringify(formData, null, 2));
     }
   };
+  console.log('SchemaRenderForm',widgets);
   return (
     <div style={{ maxWidth: 600 }}>
       <FormRender
-      schema={schema}
-      uiSchema={ uiSchema}
+        schema={schema}
+        uiSchema={ uiSchema}
         formData={formData}
         onChange={setData}
         onValidate={setValid}
         displayType="row" // 详细配置见下
+        widgets={ widgets }
       />
       <button onClick={submit}>校验</button>
     </div>
