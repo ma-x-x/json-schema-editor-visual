@@ -5,8 +5,7 @@ import jeditor from '.';
 
 import SearchInput from './components/customWidget/SearchInput';
 
-const customWidgets = [{label: '自定义搜索框', value: 'SearchInput', uiKey: "string-searchInput",  type: ['string', 'boolean'] }]
-const widgets = { SearchInput }
+const customWidgets = [{ label: '自定义搜索框', value: 'SearchInput', uiKey: "string-searchInput", type: ['string', 'boolean'] }];
 
 // if (process.env.NODE_ENV !== 'production') {
 // window.Perf = require('react-addons-perf');
