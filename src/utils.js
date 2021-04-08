@@ -10,6 +10,16 @@ export function getLang() {
   return lang;
 }
 
+// 判断字符串是符合json格式
+export const isJsonString = str => {
+  try {
+    if (typeof JSON.parse(str) == 'object') {
+      return true;
+    }
+  } catch (e) {}
+  return false;
+};
+
 export const JSONPATH_JOIN_CHAR = '.';
 export const format = [
   { name: 'date-time' },

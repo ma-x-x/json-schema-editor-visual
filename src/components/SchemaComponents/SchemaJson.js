@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LocaleProvider from '../LocalProvider/index.js';
 import MockSelect from '../MockSelect/index.js';
-import {cloneObject,filterUiTypeDefaultValue,JSONPATH_JOIN_CHAR,SCHEMA_TYPE,filterUiType,getUiObjByUiKey } from '../../utils';
+import { cloneObject, filterUiTypeDefaultValue, JSONPATH_JOIN_CHAR, SCHEMA_TYPE, filterUiType, getUiObjByUiKey } from '../../utils';
 
 const Option = Select.Option;
 
@@ -45,7 +45,7 @@ const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
     case 'array':
       newUiPrefixMap.push({
         key: 'items',
-        type:'string'
+        type: 'string'
       })
       return <SchemaArray prefix={name} data={data} showEdit={showEdit} showAdv={showAdv} uiSchema={uiSchema} uiPrefixMap={newUiPrefixMap} />;
     case 'object':
@@ -81,10 +81,10 @@ class SchemaArray extends PureComponent {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
     this.Model.changeTypeAction({ key, value });
-    
+
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    const { uiKey, uiValue } = filterUiTypeDefaultValue(value);
     this.UiModel.changeUiAction({ prefix: uiPrefix, uiKey, value: uiValue, type: value });
   };
 
@@ -138,7 +138,7 @@ class SchemaArray extends PureComponent {
   // 修改展示UI
   handleChangeUiWidget = value => {
     let prefix = this.getUiPrefix();
-    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    const { uiKey, uiValue } = filterUiTypeDefaultValue(value);
     this.UiModel.changeUiAction({ prefix: prefix, key: 'items', uiKey, value: uiValue, type: this.props.data.type });
   }
 
@@ -162,11 +162,11 @@ class SchemaArray extends PureComponent {
     let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let uiSelect = '';
-    let childUiSchema =cloneObject(uiSchema);
+    let childUiSchema = cloneObject(uiSchema);
     uiPrefixMap.forEach((item, index) => {
       childUiSchema = childUiSchema[item.key];
       if (index === uiPrefixMap.length - 1) {
-        uiSelect =  childUiSchema && childUiSchema['uiKey'];
+        uiSelect = childUiSchema && childUiSchema['uiKey'];
       }
     });
     return !_.isUndefined(data.items) && (
@@ -219,7 +219,7 @@ class SchemaArray extends PureComponent {
               />
             </Col>
           )}
-          <Col span={this.props.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
+          <Col span={this.context.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -227,7 +227,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeTitle}
             />
           </Col>
-          <Col span={this.props.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
+          <Col span={this.context.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
@@ -288,7 +288,9 @@ SchemaArray.contextTypes = {
   getOpenValue: PropTypes.func,
   Model: PropTypes.object,
   UiModel: PropTypes.object,
-  isMock: PropTypes.bool
+  isMock: PropTypes.bool,
+  showGroup: PropTypes.bool,
+  showUiSelect: PropTypes.bool
 };
 
 class SchemaItem extends PureComponent {
@@ -351,10 +353,10 @@ class SchemaItem extends PureComponent {
     let prefix = this.getPrefix();
     let key = [].concat(prefix, 'type');
     this.Model.changeTypeAction({ key, value: value });
-    
+
     // 修改ui
     let uiPrefix = this.getUiPrefix();
-    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    const { uiKey, uiValue } = filterUiTypeDefaultValue(value);
     this.UiModel.changeUiAction({ prefix: uiPrefix, uiKey, value: uiValue, type: value });
   };
 
@@ -365,9 +367,9 @@ class SchemaItem extends PureComponent {
     this.Model.deleteItemAction({ key: nameArray });
     this.Model.enableRequireAction({ prefix, name, required: false });
 
-     // 删除ui
-     let uiPrefix = this.getUiPrefix();
-     this.UiModel.deleteItemUiAction({ prefix: uiPrefix });
+    // 删除ui
+    let uiPrefix = this.getUiPrefix();
+    this.UiModel.deleteItemUiAction({ prefix: uiPrefix });
   };
   /*
   展示备注编辑弹窗
@@ -410,10 +412,10 @@ class SchemaItem extends PureComponent {
   };
 
   // 修改展示UI
-  handleChangeUiWidget = (value,type) => {
+  handleChangeUiWidget = (value, type) => {
     let prefix = this.getUiPrefix();
     const uiObj = getUiObjByUiKey(value);
-    this.UiModel.changeUiAction({ prefix: prefix,uiKey: value, value:_.get(uiObj,'value'), type:type });
+    this.UiModel.changeUiAction({ prefix: prefix, uiKey: value, value: _.get(uiObj, 'value'), type: type });
   }
 
   // 修改分组
@@ -438,12 +440,12 @@ class SchemaItem extends PureComponent {
     let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let show = this.context.getOpenValue([prefixStr]);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
-    let childUiSchema =cloneObject(uiSchema);
+    let childUiSchema = cloneObject(uiSchema);
     let uiSelect = '';
     uiPrefixMapArray.forEach((item, index) => {
-      childUiSchema = _.get(childUiSchema,item.key) ;
+      childUiSchema = _.get(childUiSchema, item.key);
       if (index === uiPrefixMapArray.length - 1) {
-        uiSelect = _.get(childUiSchema,'uiKey')
+        uiSelect = _.get(childUiSchema, 'uiKey')
       }
     });
 
@@ -523,7 +525,7 @@ class SchemaItem extends PureComponent {
             </Col>
           )}
 
-          <Col span={this.props.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
+          <Col span={this.context.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -532,7 +534,7 @@ class SchemaItem extends PureComponent {
             />
           </Col>
 
-          <Col span={this.props.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
+          <Col span={this.context.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
@@ -542,17 +544,17 @@ class SchemaItem extends PureComponent {
           </Col>
 
 
-          <Col span={2} className="col-item col-item-group">
+          {this.context.showGroup && <Col span={2} className="col-item col-item-group">
             <Input
               placeholder={LocaleProvider('group')}
               value={value.group}
               onChange={this.handleChangeGroup}
             />
-          </Col>
-          <Col span={2} className="col-item col-item-ui">
+          </Col>}
+          {this.context.showUiSelect  && <Col span={2} className="col-item col-item-ui">
             <Select
               className="type-select-style"
-              onChange={(sValue)=>this.handleChangeUiWidget(sValue, value.type)}
+              onChange={(sValue) => this.handleChangeUiWidget(sValue, value.type)}
               value={uiSelect}
 
             >
@@ -564,7 +566,7 @@ class SchemaItem extends PureComponent {
                 );
               })}
             </Select>
-          </Col>
+          </Col>}
 
           <Col span={2} className="col-item col-item-setting">
             <span className="adv-set" onClick={this.handleShowAdv}>
@@ -596,7 +598,9 @@ SchemaItem.contextTypes = {
   getOpenValue: PropTypes.func,
   Model: PropTypes.object,
   UiModel: PropTypes.object,
-  isMock: PropTypes.bool
+  isMock: PropTypes.bool,
+  showGroup: PropTypes.bool,
+  showUiSelect: PropTypes.bool
 };
 
 class SchemaObjectComponent extends Component {
@@ -639,7 +643,7 @@ const SchemaObject = connect(state => ({
 }))(SchemaObjectComponent);
 
 const DropPlus = (props, context) => {
-  const { prefix, name,  uiPrefixMap } = props;
+  const { prefix, name, uiPrefixMap } = props;
   const Model = context.Model.schema;
   const UiModel = context.Model.uiSchema;
   const menu = (

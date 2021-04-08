@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import 'antd/dist/antd.css';
 import jeditor from '.';
+import {isJsonString, combineSchema } from './utils';
 
 import SearchInput from './components/customWidget/SearchInput';
 
@@ -30,6 +31,13 @@ const mock = [
 const JEditor1 = jeditor({ mock: mock, customWidgets });
 
 const options = { lang: 'zh_CN' };
+
+function handleChange(schema, uiSchema) {
+  const schemaObj = isJsonString(schema) ? JSON.parse(schema) : schema;
+  const uiSchemaObj = isJsonString(uiSchema) ? JSON.parse(uiSchema) : uiSchema;
+  const combinedSchema = combineSchema(schemaObj, uiSchemaObj);
+  console.log('combinedSchema',combinedSchema);
+}
 
 render(
   <div>
@@ -67,8 +75,8 @@ render(
       data={''}
       customWidgets={customWidgets}
       widgets={{ SearchInput }}
-      onChange={e => {
-        console.log('changeValue', e);
+      onChange={(schema, uiSchema) => {
+        handleChange(schema,uiSchema);
       }}
     />
 

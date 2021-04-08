@@ -111,7 +111,7 @@ class jsonSchema extends React.Component {
       let newData = JSON.stringify(nextProps.schema || '');
       let oldUiData = JSON.stringify(this.props.uiSchema || '');
       let newUiData = JSON.stringify(nextProps.uiSchema || '');
-      if (oldData !== newData || oldUiData !== newUiData) return this.props.onChange(newData);
+      if (oldData !== newData || oldUiData !== newUiData) return this.props.onChange(newData,newUiData);
     }
     if (this.props.data && this.props.data !== nextProps.data) {
       this.Model.changeEditorSchemaAction({ value: JSON.parse(nextProps.data) });
@@ -651,7 +651,6 @@ class jsonSchema extends React.Component {
                 uiSchema={uiSchema}
                 showEdit={this.showEdit}
                 showAdv={this.showAdv}
-                {...this.props}
               />
             )}
           </Col>
@@ -666,7 +665,9 @@ jsonSchema.childContextTypes = {
   changeCustomValue: PropTypes.func,
   Model: PropTypes.object,
   UiModel: PropTypes.object,
-  isMock: PropTypes.bool
+  isMock: PropTypes.bool,
+  showGroup: PropTypes.bool,
+  showUiSelect: PropTypes.bool,
 };
 
 jsonSchema.propTypes = {
@@ -674,6 +675,8 @@ jsonSchema.propTypes = {
   onChange: PropTypes.func,
   showEditor: PropTypes.bool,
   isMock: PropTypes.bool,
+  showGroup: PropTypes.bool,
+  showUiSelect: PropTypes.bool,
   Model: PropTypes.object,
   UiModel: PropTypes.object,
   widgets: PropTypes.object,
