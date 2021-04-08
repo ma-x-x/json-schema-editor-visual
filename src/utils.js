@@ -158,8 +158,7 @@ function stringContains(str, text) {
 export const isObject = a =>
   stringContains(Object.prototype.toString.call(a), 'Object');
 
-/** 支持的展示形式 */
-let UI_TYPE = [
+const _DEFAULT_UI_TYPE = [
   { label: '输入框', value: 'input', uiKey: 'string-input', type: ['string'] },
   { label: '数字输入框', value: 'number', uiKey: 'string-number', type: ['number', 'integer'] },
   { label: '滑动条', value: 'slider', uiKey: 'string-slider', type: ['number', 'integer'] },
@@ -178,10 +177,13 @@ let UI_TYPE = [
   { label: '组', value: 'object', uiKey: 'object', type: ['object'] },
   { label: '列表', value: 'array', uiKey: 'array', type: ['array'] },
   // { label: '日期范围', value: 'range', uiKey: 'array-range' },
-];
+]
+
+/** 支持的展示形式 */
+let UI_TYPE = _.clone(_DEFAULT_UI_TYPE);
 
 export function expandUiType(customUiType) {
-  UI_TYPE = UI_TYPE.concat(customUiType);
+  UI_TYPE = _DEFAULT_UI_TYPE.concat(customUiType);
 }
 
 export function filterUiType(field, format) {
