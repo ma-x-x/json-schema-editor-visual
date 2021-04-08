@@ -37,7 +37,15 @@ export default  (config = {})=>{
   Component.propTypes = {
     data: PropTypes.string,
     onChange: PropTypes.func,
-    showEditor: PropTypes.bool
+    showEditor: PropTypes.bool,
+    isMock: PropTypes.bool,
+    showHeader: PropTypes.bool,
+    hideRoot: PropTypes.bool,
+    hideImportBtn: PropTypes.bool,
+    showPreviewBtn: PropTypes.bool,
+    options: PropTypes.object,
+    customWidgets: PropTypes.array,
+    widgets: PropTypes.object,
   }
   return Component;
 
