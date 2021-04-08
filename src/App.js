@@ -477,18 +477,18 @@ class jsonSchema extends React.Component {
                   </Col>
                 </Row>
               </Col>
-              <Col span={2} style={{ display: "flex", justifyContent: "center" }} className="textAlignLeft">
+              <Col span={this.props.showGroup ? 2 : 3} style={{ display: "flex", justifyContent: "center" }} className="textAlignLeft">
                 <span style={{ width: '90%' }}>类型</span>
               </Col>
               {this.props.isMock && (
-                <Col span={2} className="textAlignLeft">
+                <Col span={this.props.showUiSelect ? 2 : 3} className="textAlignLeft">
                   mock
                 </Col>
               )}
-              <Col span={this.props.isMock ? 3 : 4} className="textAlignLeft">
+              <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="textAlignLeft">
                 标题
               </Col>
-              <Col span={this.props.isMock ? 3 : 4} className="textAlignLeft">
+              <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="textAlignLeft">
                 描述
               </Col>
               {this.props.showGroup && <Col span={2} className="textAlignLeft group-header">
@@ -552,7 +552,7 @@ class jsonSchema extends React.Component {
                   </Col>
                 </Row>
               </Col>
-              <Col span={2} className="col-item col-item-type">
+              <Col span={this.props.showGroup ? 2 : 3} className="col-item col-item-type">
                 <Select
                   className="type-select-style"
                   onChange={e => this.changeType(`type`, e)}
@@ -568,7 +568,7 @@ class jsonSchema extends React.Component {
                 </Select>
               </Col>
               {this.props.isMock && (
-                <Col span={2} className="col-item col-item-mock">
+                <Col span={this.props.showUiSelect ? 2 : 3} className="col-item col-item-mock">
                   <MockSelect
                     schema={schema}
                     showEdit={() => this.showEdit([], 'mock', schema.mock, schema.type)}
@@ -576,7 +576,7 @@ class jsonSchema extends React.Component {
                   />
                 </Col>
               )}
-              <Col span={this.props.isMock ? 3 : 4} className="col-item col-item-mock">
+              <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="col-item col-item-mock">
                 <Input
                   addonAfter={
                     <EditOutlined
@@ -589,7 +589,7 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeValue(['title'], e.target.value)}
                 />
               </Col>
-              <Col span={this.props.isMock ? 3 : 4} className="col-item col-item-desc">
+              <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="col-item col-item-desc">
                 <Input
                   addonAfter={
                     <EditOutlined

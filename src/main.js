@@ -56,12 +56,14 @@ render(
 
     <JEditor1
       showEditor={false}
-      isMock={false}
+      isMock={true}
       showHeader={true}
       hideRoot={false}
       hideImportBtn={true}
-      showPreviewBtn={ true}
+      showPreviewBtn={true}
       options={options}
+      showGroup={false}
+      showUiSelect={true}
       data={''}
       customWidgets={customWidgets}
       widgets={{ SearchInput }}

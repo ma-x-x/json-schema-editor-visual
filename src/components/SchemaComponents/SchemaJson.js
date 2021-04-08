@@ -194,7 +194,7 @@ class SchemaArray extends PureComponent {
               </Col>
             </Row>
           </Col>
-          <Col span={2} className="col-item col-item-type">
+          <Col span={this.props.showGroup ? 2 : 3} className="col-item col-item-type">
             <Select
               name="itemtype"
               className="type-select-style"
@@ -211,8 +211,7 @@ class SchemaArray extends PureComponent {
             </Select>
           </Col>
           {this.context.isMock && (
-            <Col span={2} className="col-item col-item-mock">
-
+            <Col span={this.props.showUiSelect ? 2 : 3} className="col-item col-item-mock">
               <MockSelect
                 schema={items}
                 showEdit={() => this.handleShowEdit('mock', items.type)}
@@ -220,7 +219,7 @@ class SchemaArray extends PureComponent {
               />
             </Col>
           )}
-          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-mock">
+          <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -228,7 +227,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeTitle}
             />
           </Col>
-          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-desc">
+          <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
@@ -488,7 +487,7 @@ class SchemaItem extends PureComponent {
           </Col>
 
 
-          <Col span={2} className="col-item col-item-type">
+          <Col span={this.props.showGroup ? 2 : 3} className="col-item col-item-type">
             <Select
               className="type-select-style"
               onChange={this.handleChangeType}
@@ -506,7 +505,7 @@ class SchemaItem extends PureComponent {
 
 
           {this.context.isMock && (
-            <Col span={2} className="col-item col-item-mock">
+            <Col span={this.props.showUiSelect ? 2 : 3} className="col-item col-item-mock">
               {/* <Input
                 addonAfter={
                   <Icon type="edit" onClick={() => this.handleShowEdit('mock', value.type)} />
@@ -524,7 +523,7 @@ class SchemaItem extends PureComponent {
             </Col>
           )}
 
-          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-mock">
+          <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -533,7 +532,7 @@ class SchemaItem extends PureComponent {
             />
           </Col>
 
-          <Col span={this.context.isMock ? 3 : 4} className="col-item col-item-desc">
+          <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
