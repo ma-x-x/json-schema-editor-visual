@@ -37,6 +37,7 @@ export default {
     switch (value) {
       case 'textarea':
       case 'date':
+      case 'image':
         uiWidget['format'] = value;
         break;
       case 'range':
