@@ -237,14 +237,15 @@ class SchemaArray extends PureComponent {
             />
           </Col>
 
-          <Col span={2} className="col-item col-item-group">
+          {this.props.showGroup && <Col span={2} className="col-item col-item-group">
             <Input
               placeholder={LocaleProvider('group')}
               value={items.group}
               onChange={this.handleChangeGroup}
             />
           </Col>
-          <Col span={2} className="col-item col-item-ui">
+          }
+          {this.props.showUiSelect && <Col span={2} className="col-item col-item-ui">
             <Select
               className="type-select-style"
               onChange={this.handleChangeUiWidget}
@@ -259,6 +260,7 @@ class SchemaArray extends PureComponent {
               })}
             </Select>
           </Col>
+          }
 
 
           <Col span={2} className="col-item col-item-setting">

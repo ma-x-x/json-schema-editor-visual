@@ -5,7 +5,7 @@ import moox from 'moox'
 import schema from './models/schema'
 import uiSchema from './models/uiSchema'
 import PropTypes from 'prop-types';
-import { setLang , format } from './utils';
+import { setLang , format, combineSchema } from './utils';
 
 export default  (config = {})=>{
   if(config.lang) setLang(config.lang);
@@ -24,10 +24,7 @@ export default  (config = {})=>{
     Model.__jsonSchemaMock = config.mock
   }
 
-  
-
   const store = Model.getStore();
-
   const Component = (props)=>{
     return <Provider store={store} className="wrapper">
       <App Model={Model} {...props} />
@@ -50,3 +47,5 @@ export default  (config = {})=>{
   return Component;
 
 }
+
+export const combineUiSchema= combineSchema;

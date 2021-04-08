@@ -9,7 +9,6 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import '@ant-design/compatible/assets/index.css';
-
 import {
   Input,
   Row,
@@ -33,17 +32,12 @@ import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
 import SchemaRenderForm from './SchemaRenderForm'
-import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType,expandUiType } from './utils';
+import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType, expandUiType } from './utils';
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 
 const Option = Select.Option;
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
-
-
-
-
-
 class jsonSchema extends React.Component {
   constructor(props) {
     super(props);
@@ -112,10 +106,12 @@ class jsonSchema extends React.Component {
 
 
   componentWillReceiveProps(nextProps) {
-    if (typeof this.props.onChange === 'function' && this.props.schema !== nextProps.schema) {
+    if (typeof this.props.onChange === 'function' && (this.props.schema !== nextProps.schema || this.props.uiSchema !== nextProps.uiSchema)) {
       let oldData = JSON.stringify(this.props.schema || '');
       let newData = JSON.stringify(nextProps.schema || '');
-      if (oldData !== newData) return this.props.onChange(newData);
+      let oldUiData = JSON.stringify(this.props.uiSchema || '');
+      let newUiData = JSON.stringify(nextProps.uiSchema || '');
+      if (oldData !== newData || oldUiData !== newUiData) return this.props.onChange(newData);
     }
     if (this.props.data && this.props.data !== nextProps.data) {
       this.Model.changeEditorSchemaAction({ value: JSON.parse(nextProps.data) });
@@ -166,7 +162,7 @@ class jsonSchema extends React.Component {
   // 修改数据类型
   changeType = (key, value) => {
     this.Model.changeTypeAction({ key: [key], value });
-    const {uiKey, uiValue} = filterUiTypeDefaultValue(value);
+    const { uiKey, uiValue } = filterUiTypeDefaultValue(value);
     this.UiModel.changeUiAction({ prefix: [], uiKey, value: uiValue, type: value });
   };
 
@@ -206,7 +202,8 @@ class jsonSchema extends React.Component {
   changeUiWidget = (key, value) => {
     const uiObj = getUiObjByUiKey(value);
     this.UiModel.changeUiAction({
-      prefix: [], type: this.props.schema.type,uiKey: value, value:_.get(uiObj,'value')});
+      prefix: [], type: this.props.schema.type, uiKey: value, value: _.get(uiObj, 'value')
+    });
   }
 
   // 备注/mock弹窗 点击ok 时
@@ -261,9 +258,9 @@ class jsonSchema extends React.Component {
       this.Model.changeEditorSchemaAction({
         value: this.state.curItemCustomValue
       });
-        this.UiModel.changeEditorUiSchemaAction({
-          value: this.state.curItemCustomValue
-        });
+      this.UiModel.changeEditorUiSchemaAction({
+        value: this.state.curItemCustomValue
+      });
     } else {
       this.Model.changeValueAction({
         key: this.state.itemKey,
@@ -333,7 +330,7 @@ class jsonSchema extends React.Component {
     } = this.state;
 
     const { schema, uiSchema, widgets } = this.props;
-    console.log('widgets',widgets);
+    console.log('widgets', widgets);
 
     console.log('schema', schema);
 
@@ -347,7 +344,7 @@ class jsonSchema extends React.Component {
           {LocalProvider('import_json')}
         </Button>
         }
-        {this.props.showPreviewBtn &&<Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
+        {this.props.showPreviewBtn && <Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
           {LocalProvider('preview')}
         </Button>
         }
@@ -494,12 +491,13 @@ class jsonSchema extends React.Component {
               <Col span={this.props.isMock ? 3 : 4} className="textAlignLeft">
                 描述
               </Col>
-              <Col span={2} className="textAlignLeft group-header">
+              {this.props.showGroup && <Col span={2} className="textAlignLeft group-header">
                 分组
               </Col>
-              <Col span={2} className="textAlignLeft ui-display-header">
+              }
+              {this.props.showUiSelect && <Col span={2} className="textAlignLeft ui-display-header">
                 展示
-              </Col>
+              </Col>}
               <Col span={2} className="textAlignLeft">
                 设置
                {schema.type === 'object' && <span onClick={() => this.addChildField('properties')} style={{ marginLeft: 20 }}>
@@ -604,18 +602,18 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeValue(['description'], e.target.value)}
                 />
               </Col>
-              <Col span={2} className="col-item col-item-group">
+              {this.props.showGroup && <Col span={2} className="col-item col-item-group">
                 <Input
                   placeholder={LocaleProvider('group')}
                   value={schema.group}
                   onChange={e => this.changeValue(['group'], e.target.value)}
                 />
-              </Col>
-              <Col span={2} className="col-item col-item-ui">
+              </Col>}
+              {this.props.showUiSelect && <Col span={2} className="col-item col-item-ui">
                 <Select
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
-                  value={uiSchema['uiKey'] }
+                  value={uiSchema['uiKey']}
                   disabled={schema.type === 'object'}
                 >
                   {filterUiType(schema.type).map((item, index) => {
@@ -626,7 +624,7 @@ class jsonSchema extends React.Component {
                     );
                   })}
                 </Select>
-              </Col>
+              </Col>}
               <Col span={2} className="col-item col-item-setting">
                 <span className="adv-set" onClick={() => {
                   this.showAdv([], this.props.schema);
