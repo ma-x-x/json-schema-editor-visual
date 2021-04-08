@@ -36,7 +36,6 @@ const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
   let newUiPrefixMap = cloneObject(uiPrefixMap);
   if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
     let key = name[name.length - 1];
-    console.log('key',key)
     newUiPrefixMap.push({
       key,
       type: data.type
@@ -446,7 +445,6 @@ class SchemaItem extends PureComponent {
         uiSelect = _.get(childUiSchema,'uiKey')
       }
     });
-    console.log('uiSelect', uiSelect, 'value', value);
 
     return show ? (
       <div>

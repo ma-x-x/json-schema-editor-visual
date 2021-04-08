@@ -106,7 +106,6 @@ function getFieldstitle(data) {
 }
 
 export function handleSchemaRequired(schema, checked) {
-  // console.log(schema)
   if (schema.type === 'object') {
     let requiredtitle = getFieldstitle(schema.properties);
 
@@ -161,23 +160,23 @@ export const isObject = a =>
 
 /** 支持的展示形式 */
 let UI_TYPE = [
-  { label: '输入框', value: 'input', uiKey: 'string-input',type:['string']},
-  { label: '数字输入框', value: 'number', uiKey: 'string-number', type:['number','integer'] },
-  { label: '滑动条', value: 'slider', uiKey: 'string-slider',type:['number','integer'] },
-  { label: '文本域', value: 'textarea', uiKey: 'string-textarea',type:['string'] },
-  { label: '图片展示', value: 'image', format: 'image', uiKey: 'string-image',type:['string'] },
-  { label: '颜色选择', value: 'color', uiKey: 'string-color',type:['string'] },
-  { label: '日期选择', value: 'date', format: 'date', uiKey: 'string-date',type:['string'] },
-  { label: '日期时间', value: 'date', format: 'dateTime', uiKey: 'string-dateTime',type:['string'] },
-  { label: '单选框', value: 'radio', uiKey: 'string-radio',type:['string'] },
-  { label: '复选框', value: 'checkbox', uiKey: 'string-checkbox',type:['string'] },
-  { label: '下拉单选', value: 'select', uiKey: 'string-select'},
-  { label: '下拉多选', value: 'multiSelect', uiKey: 'string-multiSelect',type:['string'] },
-  { label: '文件上传', value: 'upload', uiKey: 'string-upload',type:['string'] },
-  { label: '是否选择', value: 'checkbox', uiKey: 'boolean-checkbox',type:['boolean'] },
-  { label: '开关', value: 'switch', uiKey: 'boolean-switch',type:['boolean'] },
-  { label: '组', value: 'object', uiKey: 'object',type:['object'] },
-  { label: '列表', value: 'array', uiKey: 'array',type:['array'] },
+  { label: '输入框', value: 'input', uiKey: 'string-input', type: ['string'] },
+  { label: '数字输入框', value: 'number', uiKey: 'string-number', type: ['number', 'integer'] },
+  { label: '滑动条', value: 'slider', uiKey: 'string-slider', type: ['number', 'integer'] },
+  { label: '文本域', value: 'textarea', uiKey: 'string-textarea', type: ['string'] },
+  { label: '图片展示', value: 'image', format: 'image', uiKey: 'string-image', type: ['string'] },
+  { label: '颜色选择', value: 'color', uiKey: 'string-color', type: ['string'] },
+  { label: '日期选择', value: 'date', format: 'date', uiKey: 'string-date', type: ['string'] },
+  { label: '日期时间', value: 'date', format: 'dateTime', uiKey: 'string-dateTime', type: ['string'] },
+  { label: '单选框', value: 'radio', uiKey: 'string-radio', type: ['string'] },
+  { label: '复选框', value: 'checkbox', uiKey: 'string-checkbox', type: ['string'] },
+  { label: '下拉单选', value: 'select', uiKey: 'string-select' },
+  { label: '下拉多选', value: 'multiSelect', uiKey: 'string-multiSelect', type: ['string'] },
+  { label: '文件上传', value: 'upload', uiKey: 'string-upload', type: ['string'] },
+  { label: '是否选择', value: 'checkbox', uiKey: 'boolean-checkbox', type: ['boolean'] },
+  { label: '开关', value: 'switch', uiKey: 'boolean-switch', type: ['boolean'] },
+  { label: '组', value: 'object', uiKey: 'object', type: ['object'] },
+  { label: '列表', value: 'array', uiKey: 'array', type: ['array'] },
   // { label: '日期范围', value: 'range', uiKey: 'array-range' },
 ];
 
@@ -186,12 +185,7 @@ export function expandUiType(customUiType) {
 }
 
 export function filterUiType(field, format) {
-  const a = UI_TYPE.filter(item => {
-    const bool = format ? _.findIndex(item.type, o => o === field) > -1 && item.format === format : _.findIndex(item.type, o => o === field) > -1;
-  return bool;
-  })
-  console.log(a);
-  return a;
+  return UI_TYPE.filter(item => format ? _.findIndex(item.type, o => o === field) > -1 && item.format === format : _.findIndex(item.type, o => o === field) > -1);
 }
 
 export function filterUiTypeDefaultValue(field, format) {
@@ -228,9 +222,8 @@ export function getUiData(state, keys) {
 
 export function setUiData(state, keys, value, isDelete) {
   let curState = state;
-  console.log(' keys, value, isDelete', keys, value, isDelete);
   if (keys.length === 0) {
-    curState = Object.assign(isDelete ? {}: curState, value);
+    curState = Object.assign(isDelete ? {} : curState, value);
   } else {
     for (let i = 0; i < keys.length - 1; i++) {
       curState = curState ? curState[keys[i]] : {};

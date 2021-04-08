@@ -301,7 +301,6 @@ class jsonSchema extends React.Component {
 
   //  修改弹窗中的json-schema 值
   changeCustomValue = newValue => {
-    console.log('newValue',newValue);
     this.setState({
       curItemCustomValue: newValue
     });
@@ -344,12 +343,14 @@ class jsonSchema extends React.Component {
 
     return (
       <div className="json-schema-react-editor">
-        <Button className="import-json-button" type="primary" onClick={this.showModal}>
+        {!this.props.hideImportBtn && <Button className="import-json-button" type="primary" onClick={this.showModal}>
           {LocalProvider('import_json')}
         </Button>
-        <Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
+        }
+        {this.props.showPreviewBtn &&<Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
           {LocalProvider('preview')}
         </Button>
+        }
         <Modal
           maskClosable={false}
           visible={visible}
@@ -457,7 +458,7 @@ class jsonSchema extends React.Component {
             <CustomItem data={JSON.stringify(this.state.curItemCustomValue, null, 2)} />
           </Modal>
         )}
-        {this.props.isHeader && <Row>
+        {this.props.showHeader && <Row>
           {this.props.showEditor && (
             <Col span={6} className="wrapper object-style">
               <Row type="flex" align="middle" style={{ background: 'rgba(0,0,0,.02)' }} className="root-header-wrapper">
@@ -521,8 +522,8 @@ class jsonSchema extends React.Component {
               />
             </Col>
           )}
-          <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style" style={{ marginTop: this.props.isHeader ? 0 : 8 }}>
-            {!this.props.isHideRoot && <Row type="flex" align="middle" >
+          <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style" style={{ marginTop: this.props.showHeader ? 0 : 8 }}>
+            {!this.props.hideRoot && <Row type="flex" align="middle" >
               <Col span={8} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle">
                   <Col span={2} className="down-style-col">

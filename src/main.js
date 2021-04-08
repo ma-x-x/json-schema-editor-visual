@@ -55,10 +55,12 @@ render(
     <hr />
 
     <JEditor1
-      showEditor={true}
+      showEditor={false}
       isMock={false}
-      isHeader={true}
-      isHideRoot={false}
+      showHeader={true}
+      hideRoot={false}
+      hideImportBtn={true}
+      showPreviewBtn={ true}
       options={options}
       data={''}
       customWidgets={customWidgets}

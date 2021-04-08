@@ -60,7 +60,6 @@ export default {
         break;
     }
     let newDataItem = uiWidget;
-    console.log('newDataItem',newDataItem);
     setUiData(state.data, newKeys, newDataItem);
   },
 
