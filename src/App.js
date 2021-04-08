@@ -138,7 +138,9 @@ class jsonSchema extends React.Component {
       changeCustomValue: this.changeCustomValue,
       Model: this.props.Model,
       UiModel: this.props.UiModel,
-      isMock: this.props.isMock
+      isMock: this.props.isMock,
+      showGroup: this.props.showGroup,
+      showUiSelect: this.props.showUiSelect,
     };
   }
 
@@ -649,6 +651,7 @@ class jsonSchema extends React.Component {
                 uiSchema={uiSchema}
                 showEdit={this.showEdit}
                 showAdv={this.showAdv}
+                {...this.props}
               />
             )}
           </Col>

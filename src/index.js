@@ -40,6 +40,8 @@ export default  (config = {})=>{
     hideRoot: PropTypes.bool,
     hideImportBtn: PropTypes.bool,
     showPreviewBtn: PropTypes.bool,
+    showGroup: PropTypes.bool,
+    showUiSelect: PropTypes.bool,
     options: PropTypes.object,
     customWidgets: PropTypes.array,
     widgets: PropTypes.object,
