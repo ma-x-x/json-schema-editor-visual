@@ -57,6 +57,7 @@ module.exports = {
     { "react-redux": { commonjs: "react-redux", commonjs2: "react-redux", amd: "react-redux" } },
     { lodash: { commonjs: "lodash", commonjs2: "lodash", amd: 'lodash', root: ['_'] } },
     { brace: { commonjs: "brace", commonjs2: "brace", amd: 'brace', root: ['ace'] } },
+    { "brace/mode/json": { commonjs: "brace/mode/json", commonjs2: "brace/mode/json", amd: 'brace/mode/json', root: ['brace/mode/json'] } },
     { moox: { commonjs: "moox", commonjs2: "moox", amd: 'moox' } },
     { "react-dom": { commonjs: "react-dom", commonjs2: "react-dom", amd: 'react-dom', root: ['ReactDom'] } },
     { redux: { commonjs: "redux", commonjs2: "redux", amd: 'redux' } },

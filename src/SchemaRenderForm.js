@@ -25,6 +25,7 @@ function SchemaRenderForm({ schema,uiSchema,widgets }) {
         onChange={setData}
         onValidate={setValid}
         displayType="row" // 详细配置见下
+        showDescIcon={true}
         widgets={ widgets }
       />
       <button onClick={submit}>校验</button>
