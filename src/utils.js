@@ -193,6 +193,9 @@ const _DEFAULT_UI_TYPE = [
 let UI_TYPE = _.clone(_DEFAULT_UI_TYPE);
 
 export function expandUiType(customUiType) {
+  if (!customUiType || !Array.isArray(customUiType)) {
+    return;
+  }
   UI_TYPE = _DEFAULT_UI_TYPE.concat(customUiType);
 }
 
