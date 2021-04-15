@@ -73,6 +73,7 @@ render(
       showGroup={false}
       showUiSelect={true}
       data={''}
+      uiData={''}
       customWidgets={customWidgets}
       widgets={{ SearchInput }}
       onChange={(schema, uiSchema) => {

@@ -111,10 +111,14 @@ class jsonSchema extends React.Component {
       let newData = JSON.stringify(nextProps.schema || '');
       let oldUiData = JSON.stringify(this.props.uiSchema || '');
       let newUiData = JSON.stringify(nextProps.uiSchema || '');
-      if (oldData !== newData || oldUiData !== newUiData) return this.props.onChange(newData,newUiData);
+      if (oldData !== newData || oldUiData !== newUiData) return this.props.onChange(newData, newUiData);
     }
     if (this.props.data && this.props.data !== nextProps.data) {
       this.Model.changeEditorSchemaAction({ value: JSON.parse(nextProps.data) });
+    }
+
+    if (this.props.uiData && this.props.uiData !== nextProps.uiData) {
+      this.UiModel.changeEditorUiSchemaAction({ value: JSON.parse(nextProps.uiData), isInit: true });
     }
   }
 
@@ -128,6 +132,11 @@ class jsonSchema extends React.Component {
       }`;
     }
     this.Model.changeEditorSchemaAction({ value: JSON.parse(data) });
+    let uiData = this.props.uiData;
+    if (!uiData) {
+      uiData = `{}`;
+    }
+    this.UiModel.changeEditorUiSchemaAction({ value: JSON.parse(uiData), isInit: true });
   }
 
   getChildContext() {

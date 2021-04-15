@@ -10,6 +10,10 @@ export default {
 
   changeEditorUiSchemaAction: function (state, action) {
     const value = action.value;
+    if (action.isInit) {
+      state.data = value;
+      return;
+    }
     if (_.get(value, 'type') === 'string') {
       const format = _.get(value, 'format')
       const { uiKey,uiFormat } = filterUiTypeDefaultValue('string', format);
@@ -20,6 +24,7 @@ export default {
 
   changeUiValueAction: function(state, action) {
     const keys = action.key;
+    debugger;
     if (action.value) {
       setUiData(state.data, keys, action.value);
     } else {
