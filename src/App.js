@@ -597,7 +597,7 @@ class jsonSchema extends React.Component {
             </Col>
           )}
           <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style" style={{ marginTop: this.props.showHeader ? 0 : 8 }}>
-            {!this.props.hideRoot && <Row type="flex" align="middle" >
+            {!this.props.hideRoot && <Row type="flex" align="middle"  justify="space-around">
               <Col span={this.columnWidths.name} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle">
                   <Col span={2} className="down-style-col">
