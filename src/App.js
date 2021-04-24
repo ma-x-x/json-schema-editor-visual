@@ -520,15 +520,15 @@ class jsonSchema extends React.Component {
             </Col>
           )}
           <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style">
-            <Row type="flex" align="middle" style={{ background: 'rgba(0,0,0,.02)' }} className="root-header-wrapper">
+            <Row type="flex" align="middle" style={{ background: 'rgba(0,0,0,.02)',flexWrap:'nowrap' }} className="root-header-wrapper">
               <Col span={8} className="col-item name-item col-item-name">
-                <Row type="flex" justify="space-around" align="middle">
+                <Row type="flex" justify="space-around" align="middle" style={{flexWrap:'nowrap' }}>
                   <Col span={2} className="down-style-col">
                   </Col>
                   <Col span={20}>
                     名称
                   </Col>
-                  <Col className="textAlignLeft">
+                  <Col className="textAlignLeft" span={2} style={{minWidth:35}}>
                     必须
                   </Col>
                 </Row>
