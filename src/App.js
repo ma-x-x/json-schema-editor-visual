@@ -44,6 +44,7 @@ class jsonSchema extends React.Component {
     this.alterMsg = debounce(this.alterMsg, 2000);
     const customWidgets = props.customWidgets;
     expandUiType(customWidgets);
+
     this.state = {
       visible: false,
       show: true,
@@ -65,6 +66,25 @@ class jsonSchema extends React.Component {
     this.jsonSchemaData = null;
     this.jsonUiSchemaData = null;
     this.jsonData = null;
+    this.columnWidths = this.getColumnWidths();
+  }
+
+  getColumnWidths = () => {
+    const { isMock, showGroup, showUiSelect } = this.props;
+    let otherWidth = 24 - 6 - 2 - 3- 2;
+    let otherNum = 5 - (isMock ? 0 : 1) - (showGroup ? 0 : 1) - (showUiSelect ? 0 : 1);
+    debugger;
+    let avaWidth = Math.floor(otherWidth / otherNum);
+    return ({
+      name: 6, // 固定大小
+      type: 2, // 固定大小
+      mock: avaWidth,
+      title: avaWidth + 1,
+      desc: avaWidth + 1,
+      group: avaWidth,
+      ui: avaWidth,
+      setting: 2, // 固定大小
+    });
   }
 
   // json 导入弹窗
@@ -151,6 +171,7 @@ class jsonSchema extends React.Component {
       isMock: this.props.isMock,
       showGroup: this.props.showGroup,
       showUiSelect: this.props.showUiSelect,
+      columnWidths: this.columnWidths
     };
   }
 
@@ -520,7 +541,7 @@ class jsonSchema extends React.Component {
             </Col>
           )}
           <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style">
-            <Row type="flex" align="middle" style={{ background: 'rgba(0,0,0,.02)',flexWrap:'nowrap' }} className="root-header-wrapper">
+            <Row type="flex" justify="space-around" align="middle" style={{ background: 'rgba(0,0,0,.02)',flexWrap:'nowrap' }} className="root-header-wrapper">
               <Col span={8} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle" style={{flexWrap:'nowrap' }}>
                   <Col span={2} className="down-style-col">
@@ -533,25 +554,25 @@ class jsonSchema extends React.Component {
                   </Col>
                 </Row>
               </Col>
-              <Col span={this.props.showGroup ? 2 : 3} style={{ display: "flex", justifyContent: "center" }} className="textAlignLeft">
+              <Col span={this.columnWidths.type} style={{ display: "flex", justifyContent: "center" }} className="textAlignLeft">
                 <span style={{ width: '90%' }}>类型</span>
               </Col>
               {this.props.isMock && (
-                <Col span={this.props.showUiSelect ? 2 : 3} className="textAlignLeft">
+                <Col span={this.columnWidths.mock} className="textAlignLeft">
                   mock
                 </Col>
               )}
-              <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="textAlignLeft">
+              <Col span={this.columnWidths.title} className="textAlignLeft">
                 标题
               </Col>
-              <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="textAlignLeft">
+              <Col span={this.columnWidths.desc} className="textAlignLeft">
                 描述
               </Col>
-              {this.props.showGroup && <Col span={2} className="textAlignLeft group-header">
+              {this.props.showGroup && <Col span={this.columnWidths.group} className="textAlignLeft group-header">
                 分组
               </Col>
               }
-              {this.props.showUiSelect && <Col span={2} className="textAlignLeft ui-display-header">
+              {this.props.showUiSelect && <Col span={this.columnWidths.ui} className="textAlignLeft ui-display-header">
                 展示
               </Col>}
               <Col span={2} className="textAlignLeft">
@@ -608,7 +629,7 @@ class jsonSchema extends React.Component {
                   </Col>
                 </Row>
               </Col>
-              <Col span={this.props.showGroup ? 2 : 3} className="col-item col-item-type">
+              <Col span={this.columnWidths.type} className="col-item col-item-type">
                 <Select
                   className="type-select-style"
                   onChange={e => this.changeType(`type`, e)}
@@ -624,7 +645,7 @@ class jsonSchema extends React.Component {
                 </Select>
               </Col>
               {this.props.isMock && (
-                <Col span={this.props.showUiSelect ? 2 : 3} className="col-item col-item-mock">
+                <Col span={this.columnWidths.mock} className="col-item col-item-mock">
                   <MockSelect
                     schema={schema}
                     showEdit={() => this.showEdit([], 'mock', schema.mock, schema.type)}
@@ -632,7 +653,7 @@ class jsonSchema extends React.Component {
                   />
                 </Col>
               )}
-              <Col span={this.props.isMock ? this.props.showGroup ? 3 : 4 : this.props.showGroup ? 4 : 5} className="col-item col-item-mock">
+              <Col span={this.columnWidths.title} className="col-item col-item-mock">
                 <Input
                   addonAfter={
                     <EditOutlined
@@ -645,7 +666,7 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeValue(['title'], e.target.value)}
                 />
               </Col>
-              <Col span={this.props.isMock ? this.props.showUiSelect ? 3 : 4 : this.props.showUiSelect ? 4 : 5} className="col-item col-item-desc">
+              <Col span={this.columnWidths.desc} className="col-item col-item-desc">
                 <Input
                   addonAfter={
                     <EditOutlined
@@ -658,14 +679,14 @@ class jsonSchema extends React.Component {
                   onChange={e => this.changeValue(['description'], e.target.value)}
                 />
               </Col>
-              {this.props.showGroup && <Col span={2} className="col-item col-item-group">
+              {this.props.showGroup && <Col span={this.columnWidths.group} className="col-item col-item-group">
                 <Input
                   placeholder={LocaleProvider('group')}
                   value={schema.group}
                   onChange={e => this.changeValue(['group'], e.target.value)}
                 />
               </Col>}
-              {this.props.showUiSelect && <Col span={2} className="col-item col-item-ui">
+              {this.props.showUiSelect && <Col span={this.columnWidths.ui} className="col-item col-item-ui">
                 <Select
                   className="type-select-style"
                   onChange={value => this.changeUiWidget(null, value)}
@@ -722,6 +743,7 @@ jsonSchema.childContextTypes = {
   isMock: PropTypes.bool,
   showGroup: PropTypes.bool,
   showUiSelect: PropTypes.bool,
+  columnWidths: PropTypes.object,
 };
 
 jsonSchema.propTypes = {

@@ -69,7 +69,7 @@ render(
      hideRoot={true}
      hideImportBtn={true}
      showPreviewBtn={true}
-     showUiSelect={true}
+     showUiSelect={false}
      options={options}
      data={
        '{"type":"object","title":"","properties":{"dataSource":{"type":"object","properties":{},"title":"数据源"}},"required":["dataSource"]}'

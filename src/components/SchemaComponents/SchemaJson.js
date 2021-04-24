@@ -163,17 +163,15 @@ class SchemaArray extends PureComponent {
   }
 
   render() {
+    console.log('xxxx',this.context);
     const { data, prefix, showEdit, showAdv, uiSchema, uiPrefixMap } = this.props;
-    console.log('xxxx',data)
     const items = data.items;
-    console.log('xxxx-items',items)
     let prefixArray = [].concat(prefix, 'items');
     let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let uiSelect = '';
     let childUiSchema = cloneObject(uiSchema);
     let curUiPrefixMap = this.getUiPrefix();
-    console.log('xxx-curUiPrefixMap',curUiPrefixMap);
     curUiPrefixMap.forEach((item, index) => {
       childUiSchema =  _.get(childUiSchema,`${_.get(item,'key')}`)|| {};
       if (index === curUiPrefixMap.length - 1) {
@@ -205,7 +203,7 @@ class SchemaArray extends PureComponent {
               </Col>
             </Row>
           </Col>
-          <Col span={this.context.showGroup ? 2 : 3} className="col-item col-item-type">
+          <Col span={this.context.columnWidths.type} className="col-item col-item-type">
             <Select
               name="itemtype"
               className="type-select-style"
@@ -222,7 +220,7 @@ class SchemaArray extends PureComponent {
             </Select>
           </Col>
           {this.context.isMock && (
-            <Col span={this.context.showUiSelect ? 2 : 3} className="col-item col-item-mock">
+            <Col span={this.context.columnWidths.mock} className="col-item col-item-mock">
               <MockSelect
                 schema={items}
                 showEdit={() => this.handleShowEdit('mock', items.type)}
@@ -230,7 +228,7 @@ class SchemaArray extends PureComponent {
               />
             </Col>
           )}
-          <Col span={this.context.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
+          <Col span={this.context.columnWidths.title} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -238,7 +236,7 @@ class SchemaArray extends PureComponent {
               onChange={this.handleChangeTitle}
             />
           </Col>
-          <Col span={this.context.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
+          <Col span={this.context.columnWidths.desc} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
@@ -247,7 +245,7 @@ class SchemaArray extends PureComponent {
             />
           </Col>
 
-          {this.context.showGroup && <Col span={2} className="col-item col-item-group">
+          {this.context.showGroup && <Col span={this.context.columnWidths.group} className="col-item col-item-group">
             <Input
               placeholder={LocaleProvider('group')}
               value={items.group}
@@ -255,7 +253,7 @@ class SchemaArray extends PureComponent {
             />
           </Col>
           }
-          {this.context.showUiSelect && <Col span={2} className="col-item col-item-ui">
+          {this.context.showUiSelect && <Col span={this.context.columnWidths.ui} className="col-item col-item-ui">
             <Select
               className="type-select-style"
               onChange={this.handleChangeUiWidget}
@@ -301,7 +299,8 @@ SchemaArray.contextTypes = {
   UiModel: PropTypes.object,
   isMock: PropTypes.bool,
   showGroup: PropTypes.bool,
-  showUiSelect: PropTypes.bool
+  showUiSelect: PropTypes.bool,
+  columnWidths: PropTypes.object,
 };
 
 class SchemaItem extends PureComponent {
@@ -443,6 +442,7 @@ class SchemaItem extends PureComponent {
   }
 
   render() {
+    console.log('dddd-xxxx',this.context);
     let { name, data, prefix, showEdit, showAdv, uiSchema, uiPrefixMap } = this.props;
     let value = data.properties[name];
     let prefixArray = [].concat(prefix, name);
@@ -500,7 +500,7 @@ class SchemaItem extends PureComponent {
           </Col>
 
 
-          <Col span={this.context.showGroup ? 2 : 3} className="col-item col-item-type">
+          <Col span={this.context.columnWidths.type} className="col-item col-item-type">
             <Select
               className="type-select-style"
               onChange={this.handleChangeType}
@@ -518,7 +518,7 @@ class SchemaItem extends PureComponent {
 
 
           {this.context.isMock && (
-            <Col span={this.context.showUiSelect ? 2 : 3} className="col-item col-item-mock">
+            <Col span={this.context.columnWidths.mock} className="col-item col-item-mock">
               {/* <Input
                 addonAfter={
                   <Icon type="edit" onClick={() => this.handleShowEdit('mock', value.type)} />
@@ -536,7 +536,7 @@ class SchemaItem extends PureComponent {
             </Col>
           )}
 
-          <Col span={this.context.isMock ? this.context.showGroup ? 3 : 4 : this.context.showGroup ? 4 : 5} className="col-item col-item-mock">
+          <Col span={this.context.columnWidths.title} className="col-item col-item-mock">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('title')} />}
               placeholder={LocaleProvider('title')}
@@ -545,7 +545,7 @@ class SchemaItem extends PureComponent {
             />
           </Col>
 
-          <Col span={this.context.isMock ? this.context.showUiSelect ? 3 : 4 : this.context.showUiSelect ? 4 : 5} className="col-item col-item-desc">
+          <Col span={this.context.columnWidths.desc} className="col-item col-item-desc">
             <Input
               addonAfter={<EditOutlined onClick={() => this.handleShowEdit('description')} />}
               placeholder={LocaleProvider('description')}
@@ -555,14 +555,14 @@ class SchemaItem extends PureComponent {
           </Col>
 
 
-          {this.context.showGroup && <Col span={2} className="col-item col-item-group">
+          {this.context.showGroup && <Col span={this.context.columnWidths.group} className="col-item col-item-group">
             <Input
               placeholder={LocaleProvider('group')}
               value={value.group}
               onChange={this.handleChangeGroup}
             />
           </Col>}
-          {this.context.showUiSelect  && <Col span={2} className="col-item col-item-ui">
+          {this.context.showUiSelect  && <Col span={this.context.columnWidths.ui} className="col-item col-item-ui">
             <Select
               className="type-select-style"
               onChange={(sValue) => this.handleChangeUiWidget(sValue, value.type)}
@@ -611,7 +611,8 @@ SchemaItem.contextTypes = {
   UiModel: PropTypes.object,
   isMock: PropTypes.bool,
   showGroup: PropTypes.bool,
-  showUiSelect: PropTypes.bool
+  showUiSelect: PropTypes.bool,
+  columnWidths:PropTypes.object
 };
 
 class SchemaObjectComponent extends Component {
