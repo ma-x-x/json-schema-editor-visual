@@ -34,21 +34,25 @@ const Option = Select.Option;
 
 const mapping = (name, data, showEdit, showAdv, uiSchema, uiPrefixMap) => {
   let newUiPrefixMap = cloneObject(uiPrefixMap);
-  if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
-    let key = name[name.length - 1];
-    newUiPrefixMap.push({
-      key,
-      type: data.type
-    })
-  }
+  console.log('newUiPrefixMap',newUiPrefixMap);
   switch (data.type) {
     case 'array':
-      newUiPrefixMap.push({
-        key: 'items',
-        type: 'string'
-      })
+      if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
+        let key = name[name.length - 1];
+        newUiPrefixMap.push({
+          key,
+          type: data.type
+        })
+      }
       return <SchemaArray prefix={name} data={data} showEdit={showEdit} showAdv={showAdv} uiSchema={uiSchema} uiPrefixMap={newUiPrefixMap} />;
     case 'object':
+      if (Array.isArray(name) && name.length > 1 && Array.isArray(newUiPrefixMap)) {
+        let key = name[name.length - 1];
+        newUiPrefixMap.push({
+          key,
+          type: data.type
+        })
+      }
       let nameArray = [].concat(name, 'properties');
       return <SchemaObject prefix={nameArray} data={data} showEdit={showEdit} showAdv={showAdv} uiSchema={uiSchema} uiPrefixMap={newUiPrefixMap} />;
     default:
@@ -117,6 +121,10 @@ class SchemaArray extends PureComponent {
     let keyArr = [].concat(prefix, 'properties');
     this.Model.addChildFieldAction({ key: keyArr });
     this.Model.setOpenValueAction({ key: keyArr, value: true });
+
+    /** UI组件 */
+    let uiPrefixMap = this.getUiPrefix();
+    this.UiModel.addFieldUiAction({ uiPrefixMap, })
   };
 
   handleClickIcon = () => {
@@ -151,21 +159,24 @@ class SchemaArray extends PureComponent {
   }
 
   getUiPrefix() {
-    return this.props.uiPrefixMap;
+    return [].concat(this.props.uiPrefixMap, {key: "items", type: "string"});
   }
 
   render() {
     const { data, prefix, showEdit, showAdv, uiSchema, uiPrefixMap } = this.props;
+    console.log('xxxx',data)
     const items = data.items;
+    console.log('xxxx-items',items)
     let prefixArray = [].concat(prefix, 'items');
-
     let prefixArrayStr = [].concat(prefixArray, 'properties').join(JSONPATH_JOIN_CHAR);
     let showIcon = this.context.getOpenValue([prefixArrayStr]);
     let uiSelect = '';
     let childUiSchema = cloneObject(uiSchema);
-    uiPrefixMap.forEach((item, index) => {
-      childUiSchema = childUiSchema[item.key];
-      if (index === uiPrefixMap.length - 1) {
+    let curUiPrefixMap = this.getUiPrefix();
+    console.log('xxx-curUiPrefixMap',curUiPrefixMap);
+    curUiPrefixMap.forEach((item, index) => {
+      childUiSchema =  _.get(childUiSchema,`${_.get(item,'key')}`)|| {};
+      if (index === curUiPrefixMap.length - 1) {
         uiSelect = childUiSchema && childUiSchema['uiKey'];
       }
     });
@@ -270,7 +281,7 @@ class SchemaArray extends PureComponent {
             </span>
 
             {items.type === 'object' ? (
-              <span onClick={this.handleAddChildField}>
+              <span onClick={()=>this.handleAddChildField(items)}>
                 <Tooltip placement="top" title={LocaleProvider('add_child_node')}>
                   <PlusOutlined className="plus" />
                 </Tooltip>

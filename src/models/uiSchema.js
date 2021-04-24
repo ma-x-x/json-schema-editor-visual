@@ -24,7 +24,6 @@ export default {
 
   changeUiValueAction: function(state, action) {
     const keys = action.key;
-    debugger;
     if (action.value) {
       setUiData(state.data, keys, action.value);
     } else {

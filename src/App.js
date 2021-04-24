@@ -32,7 +32,7 @@ import LocalProvider from './components/LocalProvider/index.js';
 import MockSelect from './components/MockSelect/index.js';
 import LocaleProvider from './components/LocalProvider/index.js';
 import SchemaRenderForm from './SchemaRenderForm'
-import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType, expandUiType } from './utils';
+import { debounce, getData, filterUiTypeDefaultValue, getUiObjByUiKey, SCHEMA_TYPE, filterUiType, expandUiType,schemaConvertUiSchema } from './utils';
 const GenerateSchema = require('generate-schema/src/schemas/json.js');
 
 const Option = Select.Option;
@@ -57,11 +57,13 @@ class jsonSchema extends React.Component {
       editorModalName: '', // 弹窗名称desctiption | mock
       mock: '',
       previewVisible: false,
+      importUiSchemaVisible: false,
       uiItemKey: [],
     };
     this.Model = this.props.Model.schema;
     this.UiModel = this.props.Model.uiSchema;
     this.jsonSchemaData = null;
+    this.jsonUiSchemaData = null;
     this.jsonData = null;
   }
 
@@ -103,7 +105,6 @@ class jsonSchema extends React.Component {
       previewVisible: false
     });
   };
-
 
   componentWillReceiveProps(nextProps) {
     if (typeof this.props.onChange === 'function' && (this.props.schema !== nextProps.schema || this.props.uiSchema !== nextProps.uiSchema)) {
@@ -190,6 +191,34 @@ class jsonSchema extends React.Component {
     }
     this.jsonSchemaData = e.jsonData;
   };
+
+     /** UiSchema 导入弹窗 */
+     showUiModal = () => {
+      this.setState({
+        importUiSchemaVisible: true
+      });
+    };
+  
+    cancelUiModal = () => {
+      this.setState({
+        importUiSchemaVisible: false
+      });
+    };
+  
+
+  handleImportUiSchema = e => {
+    if (!e.text || e.format !== true) {
+      return (this.jsonUiSchemaData = null);
+    }
+    this.jsonUiSchemaData = e.jsonData;
+  };
+
+  handleUiSchemaOk = () => {
+    const uiSchema = schemaConvertUiSchema(this.uiSchemaData);
+    this.UiModel.changeEditorUiSchemaAction({ value: uiSchema, isInit: true });
+  }
+
+
   // 增加子节点
   addChildField = key => {
     this.Model.addChildFieldAction({ key: [key] });
@@ -326,10 +355,6 @@ class jsonSchema extends React.Component {
     this.Model.requireAllAction({ required: e, value: this.props.schema });
   };
 
-  onFmChange = (value) => {
-
-  }
-
   render() {
     const {
       visible,
@@ -337,15 +362,11 @@ class jsonSchema extends React.Component {
       advVisible,
       checked,
       editorModalName,
-      previewVisible
+      previewVisible,
+      importUiSchemaVisible
     } = this.state;
 
     const { schema, uiSchema, widgets } = this.props;
-    console.log('widgets', widgets);
-
-    console.log('schema', schema);
-
-    console.log('uiSchema', uiSchema);
     let disabled =
       this.props.schema.type === 'object' || this.props.schema.type === 'array' ? false : true;
 
@@ -355,6 +376,9 @@ class jsonSchema extends React.Component {
           {LocalProvider('import_json')}
         </Button>
         }
+        {this.props.showImportSchemaBtn && <Button className="import-json-button" type="primary" onClick={this.showUiModal}>
+          {LocalProvider('import')}
+        </Button> }
         {this.props.showPreviewBtn && <Button className="import-json-button" type="primary" onClick={this.showPreviewModal}>
           {LocalProvider('preview')}
         </Button>
@@ -390,6 +414,27 @@ class jsonSchema extends React.Component {
               <AceEditor data="" mode="json" onChange={this.handleImportJsonSchema} />
             </TabPane>
           </Tabs>
+        </Modal>
+
+        <Modal
+          maskClosable={false}
+          visible={importUiSchemaVisible}
+          title={LocalProvider('import_json_schema')}
+          onOk={this.handleOk}
+          onCancel={this.cancelUiModal}
+          className="json-schema-react-editor-import-modal"
+          okText={'ok'}
+          cancelText={LocalProvider('cancel')}
+          footer={[
+            <Button key="back" onClick={this.cancelUiModal}>
+              {LocalProvider('cancel')}
+            </Button>,
+            <Button key="submit" type="primary" onClick={this.handleUiSchemaOk}>
+              {LocalProvider('ok')}
+            </Button>
+          ]}
+        >
+          <AceEditor data="" mode="json" onChange={this.handleImportUiSchema} />
         </Modal>
 
         <Modal
@@ -431,7 +476,7 @@ class jsonSchema extends React.Component {
           visible={previewVisible}
           title={LocalProvider('preview')}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          onCancel={this.cancelPreviewModal}
           className="json-schema-react-editor-import-modal"
           okText={'ok'}
           cancelText={LocalProvider('cancel')}
@@ -511,7 +556,7 @@ class jsonSchema extends React.Component {
               </Col>}
               <Col span={2} className="textAlignLeft">
                 设置
-               {schema.type === 'object' && <span onClick={() => this.addChildField('properties')} style={{ marginLeft: 20 }}>
+               {this.props.hideRoot && schema.type === 'object' && <span onClick={() => this.addChildField('properties')} style={{ marginLeft: 20 }}>
                   <Tooltip placement="top" title={LocalProvider('add_child_node')}>
                     <PlusOutlined className="plus" />
                   </Tooltip>

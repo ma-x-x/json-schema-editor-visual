@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 // 使用 Ant Design 风格
 import FormRender from 'form-render/lib/antd';
+import { message } from 'antd';
+import copy from 'copy-to-clipboard';
+import {isJsonString, combineSchema } from './utils';
 // 使用 Fusion 风格
 // import FormRender from 'form-render/lib/fusion';
 // import '@alifd/next/dist/next.min.css';
@@ -8,12 +11,13 @@ import FormRender from 'form-render/lib/antd';
 function SchemaRenderForm({ schema,uiSchema,widgets }) {
   const [formData, setData] = useState({});
   const [valid, setValid] = useState([]);
-  const submit = () => {
-    if (valid.length > 0) {
-      alert('未通过校验字段：' + valid.join(','));
-    } else {
-      alert(JSON.stringify(formData, null, 2));
-    }
+  console.log('valid',valid)
+  const handleCopy = () => {
+    const schemaObj = isJsonString(schema) ? JSON.parse(schema) : schema;
+    const uiSchemaObj = isJsonString(uiSchema) ? JSON.parse(uiSchema) : uiSchema;
+    const combinedSchema = combineSchema(schemaObj, uiSchemaObj);
+    copy(JSON.stringify(combinedSchema));
+    message.success('复制成功');
   };
   console.log('SchemaRenderForm',widgets);
   return (
@@ -28,7 +32,7 @@ function SchemaRenderForm({ schema,uiSchema,widgets }) {
         showDescIcon={true}
         widgets={ widgets }
       />
-      <button onClick={submit}>校验</button>
+      <button onClick={handleCopy}>复制</button>
     </div>
   );
 }

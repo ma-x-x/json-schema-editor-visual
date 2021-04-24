@@ -40,7 +40,9 @@ const langs = {
     'mockLink': 'Help',
     'group': 'group',
     'ui': 'display',
-    'preview':'preview'
+    'preview': 'preview',
+    'import': 'Import',
+    'import_json_schema': 'Import jsonSchema',
   },
   zh_CN: {
     'title': '标题',
@@ -79,7 +81,9 @@ const langs = {
     'mockLink': '查看文档',
     'group': '分组',
     'ui': '展示',
-    'preview':'预览'
+    'preview': '预览',
+    'import': '导入',
+    'import_json_schema': '导入 jsonSchema',
   }
 }
 

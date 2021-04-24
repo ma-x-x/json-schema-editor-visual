@@ -40,6 +40,7 @@ export default  (config = {})=>{
     hideRoot: PropTypes.bool,
     hideImportBtn: PropTypes.bool,
     showPreviewBtn: PropTypes.bool,
+    showImportSchemaBtn: PropTypes.bool,
     showGroup: PropTypes.bool,
     showUiSelect: PropTypes.bool,
     options: PropTypes.object,

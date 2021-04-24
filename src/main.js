@@ -36,7 +36,7 @@ function handleChange(schema, uiSchema) {
   const schemaObj = isJsonString(schema) ? JSON.parse(schema) : schema;
   const uiSchemaObj = isJsonString(uiSchema) ? JSON.parse(uiSchema) : uiSchema;
   const combinedSchema = combineSchema(schemaObj, uiSchemaObj);
-  console.log('combinedSchema',combinedSchema);
+  console.log(combinedSchema)
 }
 
 render(
@@ -63,17 +63,20 @@ render(
     <hr />
 
     <JEditor1
-      showEditor={false}
-      isMock={true}
-      showHeader={true}
-      hideRoot={false}
-      hideImportBtn={true}
-      showPreviewBtn={true}
-      options={options}
-      showGroup={false}
-      showUiSelect={true}
-      data={''}
-      uiData={''}
+     showEditor={false}
+     isMock={false}
+     showHeader={true}
+     hideRoot={true}
+     hideImportBtn={true}
+     showPreviewBtn={true}
+     showUiSelect={true}
+     options={options}
+     data={
+       '{"type":"object","title":"","properties":{"dataSource":{"type":"object","properties":{},"title":"数据源"}},"required":["dataSource"]}'
+     }
+     uiData={
+       '{"dataSource":{"type":"object","uiKey":"string-dataSourceSelect","ui:widget":"DataSourceSelect"}}'
+     }
       customWidgets={customWidgets}
       widgets={{ SearchInput }}
       onChange={(schema, uiSchema) => {

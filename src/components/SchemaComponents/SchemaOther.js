@@ -21,6 +21,9 @@ const Option = Select.Option;
 const { TextArea } = Input;
 
 const changeOtherValue = (value, name, data, change) => {
+  if (['integer', 'number'].includes(data.type) && name === 'default' && !isNaN(value)) {
+    value = Number(value);
+  }
   data[name] = value;
   change(data);
 };
@@ -61,7 +64,7 @@ class SchemaString extends PureComponent {
   changeEnumOtherName = (value, data) => {
     var arr = value.split('\n');
     if (arr.length === 0 || (arr.length === 1 && !arr[0])) {
-      delete data.enum;
+      delete data.enumNames;
       this.context.changeCustomValue(data);
     } else {
       data.enumNames = arr;
@@ -86,6 +89,7 @@ class SchemaString extends PureComponent {
 
   render() {
     const { data } = this.props;
+    console.log('data',data);
     return (
       <div>
         <div className="default-setting">{LocalProvider('base_setting')}</div>
@@ -179,7 +183,7 @@ class SchemaString extends PureComponent {
             </Col>
             <Col span={20}>
               <TextArea
-                value={data.enumDesc}
+                value={data.enumNames && data.enumNames.length && data.enumNames.join('\n')}
                 disabled={!this.state.checked}
                 placeholder={LocalProvider('enum_msg')}
                 autosize={{ minRows: 2, maxRows: 6 }}
@@ -250,7 +254,8 @@ class SchemaNumber extends PureComponent {
     super(props);
     this.state = {
       checked: _.isUndefined(props.data.enum) ? false : true,
-      enum: _.isUndefined(props.data.enum) ? '' : props.data.enum.join('\n')
+      enum: _.isUndefined(props.data.enum) ? '' : props.data.enum.join('\n'),
+      enumNames: _.isUndefined(props.data.enumNames) ? '' : props.data.enumNames.join('\n')
     };
   }
 
@@ -259,6 +264,11 @@ class SchemaNumber extends PureComponent {
     const nextEnumStr = _.isUndefined(nextprops.data.enum) ? '' : nextprops.data.enum.join('\n');
     if (enumStr !== nextEnumStr) {
       this.setState({ enum: nextEnumStr });
+    }
+    const enumNamesStr = _.isUndefined(this.props.data.enumNames) ? '' : this.props.data.enumNames.join('\n');
+    const nextEnumNamesStr = _.isUndefined(nextprops.data.enumNames) ? '' : nextprops.data.enumNames.join('\n');
+    if (enumNamesStr !== nextEnumNamesStr) {
+      this.setState({ enumNames: nextEnumNamesStr });
     }
   }
 
@@ -269,7 +279,8 @@ class SchemaNumber extends PureComponent {
 
     if (!checked) {
       delete data.enum;
-      this.setState({ enum: '' });
+      delete data.enumNames;
+      this.setState({ enum: '', enumNames:'' });
       this.context.changeCustomValue(data);
     }
   };
@@ -293,8 +304,15 @@ class SchemaNumber extends PureComponent {
   };
 
   changeEnumDescOtherValue = (value, data) => {
-    data.enumDesc = value;
-    this.context.changeCustomValue(data);
+    this.setState({ enumNames: value });
+    var arr = value.split('\n');
+    if (arr.length === 0 || (arr.length === 1 && !arr[0])) {
+      delete data.enumNames;
+      this.context.changeCustomValue(data);
+    } else {
+      data.enumNames = arr.map(item => +item);
+      this.context.changeCustomValue(data);
+    }
   };
 
   render() {
@@ -307,11 +325,11 @@ class SchemaNumber extends PureComponent {
             {LocalProvider('default')}：
           </Col>
           <Col span={20}>
-            <Input
+            <InputNumber
               value={data.default}
               placeholder={LocalProvider('default')}
               onChange={e =>
-                changeOtherValue(e.target.value, 'default', data, this.context.changeCustomValue)
+                changeOtherValue(e, 'default', data, this.context.changeCustomValue)
               }
             />
           </Col>
@@ -427,7 +445,7 @@ class SchemaNumber extends PureComponent {
             </Col>
             <Col span={20}>
               <TextArea
-                value={data.enumDesc}
+                value={this.state.enumNames}
                 disabled={!this.state.checked}
                 placeholder={LocalProvider('enum_desc_msg')}
                 autosize={{ minRows: 2, maxRows: 6 }}

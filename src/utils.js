@@ -16,7 +16,7 @@ export const isJsonString = str => {
     if (typeof JSON.parse(str) == 'object') {
       return true;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 };
 
@@ -173,12 +173,12 @@ const _DEFAULT_UI_TYPE = [
   { label: '数字输入框', value: 'number', uiKey: 'string-number', type: ['number', 'integer'] },
   { label: '滑动条', value: 'slider', uiKey: 'string-slider', type: ['number', 'integer'] },
   { label: '文本域', value: 'textarea', uiKey: 'string-textarea', type: ['string'] },
-  { label: '图片展示', value: 'image', format: 'image', uiKey: 'string-image', type: ['string'] },
+  // { label: '图片展示', value: 'image', format: 'image', uiKey: 'string-image', type: ['string'] },
   { label: '颜色选择', value: 'color', uiKey: 'string-color', type: ['string'] },
   { label: '日期选择', value: 'date', format: 'date', uiKey: 'string-date', type: ['string'] },
-  { label: '日期时间', value: 'date', format: 'dateTime', uiKey: 'string-dateTime', type: ['string'] },
+  // { label: '日期时间', value: 'date', format: 'dateTime', uiKey: 'string-dateTime', type: ['string'] },
   { label: '单选框', value: 'radio', uiKey: 'string-radio', type: ['string'] },
-  { label: '复选框', value: 'checkbox', uiKey: 'string-checkbox', type: ['string'] },
+  // { label: '复选框', value: 'checkbox', uiKey: 'string-checkbox', type: ['string'] },
   { label: '下拉单选', value: 'select', uiKey: 'string-select' },
   { label: '下拉多选', value: 'multiSelect', uiKey: 'string-multiSelect', type: ['string'] },
   { label: '文件上传', value: 'upload', uiKey: 'string-upload', type: ['string'] },
@@ -330,3 +330,69 @@ export function combineSchema(propsSchema = {}, uiSchema = {}) {
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
+/**
+ * 将schema转化为表格uiSchema
+ * @param {schema数据} data
+ */
+export function schemaConvertUiSchema(data) {
+  let uiSchemas = {};
+  if (!data) {
+    return uiSchemas
+  }
+  if (data.type === 'object' && data.hasOwnProperty('properties') && !_.isEmpty(data.properties)) {
+    uiSchemas = {
+      ...convertObjectData(data)
+    }
+
+  } else if (data.type === 'array' && data.hasOwnProperty('items') && !_.isEmpty(data.items)) {
+    uiSchemas = convertArrayData(data);
+  }
+  console.log('xxxx',uiSchemas)
+  return uiSchemas;
+};
+
+const convertArrayData = (data) => {
+  let items = data.items;
+  let subUiData = {};
+  let value = {
+    ...items,
+    type: items.type,
+    uiKey: items.uiKey || 'string-input'
+  };
+  items['ui:widget'] && (value['ui:widget'] = items['ui:widget']);
+  if (items.type === 'object' && !_.isEmpty(items.properties)) {
+    value = { ...convertObjectData(items), type: items.type, uiKey: 'object' };
+  } else if (items.type === 'array' && items.hasOwnProperty('items') && !_.isEmpty(items.items)) {
+    value = { ...convertArrayData(items), type: items.type, uiKey: ['object', 'array'].includes(items.type) ? items.type : 'string-input' }
+  }
+  subUiData = Object.assign(subUiData, {
+    'items': value, type: data.type, uiKey: data.uiKey || ['object', 'array'].includes(data.type) ? data.type : 'string-input', 'ui:widget': data['ui:widget']
+  });
+  console.log('subUiData', subUiData);
+  return subUiData;
+
+};
+
+const convertObjectData = (data,) => {
+  let properties = data.properties;
+  let subUiData = {};
+  for (let key in properties) {
+    let property = properties[key];
+    let value = {
+      ...property,
+      type: property.type,
+      uiKey: property.uiKey || 'string-input'
+    };
+    property['ui:widget'] && (value['ui:widget'] = property['ui:widget']);
+    if (property.type === 'object' && !_.isEmpty(property.properties)) {
+      value = { ...convertObjectData(property), type: property.type, uiKey: 'object' };
+    } else if (property.type === 'array' && property.hasOwnProperty('items') && !_.isEmpty(property.items)) {
+      value = { ...convertArrayData(property), type: property.type, uiKey: ['object', 'array'].includes(property.type) ? property.type : 'string-input' }
+    }
+    subUiData = Object.assign(subUiData, {
+      [key]: value, type: property.type, uiKey: property.uiKey || ['object', 'array'].includes(property.type) ? property.type : 'string-input',
+    });
+  }
+  return subUiData;
+};;

@@ -1,6 +1,6 @@
 const paths = require('./paths');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: paths.appPackageJs,
@@ -37,20 +37,20 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
-    new BundleAnalyzerPlugin(
-    {
-      analyzerMode: 'server',
-      analyzerHost: '127.0.0.1',
-      analyzerPort: 8889,
-      reportFilename: 'report.html',
-      defaultSizes: 'parsed',
-      openAnalyzer: true,
-      generateStatsFile: false,
-      statsFilename: 'stats.json',
-      statsOptions: null,
-      logLevel: 'info'
-    }
-    ),
+    // new BundleAnalyzerPlugin(
+    // {
+    //   analyzerMode: 'server',
+    //   analyzerHost: '127.0.0.1',
+    //   analyzerPort: 8889,
+    //   reportFilename: 'report.html',
+    //   defaultSizes: 'parsed',
+    //   openAnalyzer: true,
+    //   generateStatsFile: false,
+    //   statsFilename: 'stats.json',
+    //   statsOptions: null,
+    //   logLevel: 'info'
+    // }
+    // ),
   ],
   externals: [
     { react: { commonjs: "react", commonjs2: "react", amd: 'react', root: ['React'] } },
@@ -65,6 +65,7 @@ module.exports = {
     { "moment": { commonjs: "moment", commonjs2: "moment", amd: 'moment' } },
     { antd: { commonjs: "antd", commonjs2: "antd", amd: 'antd' } },
     { "form-render": { commonjs: "form-render", commonjs2: "form-render", amd: 'form-render', root: ['FormRender'] } },
+    'copy-to-clipboard',
     // 匹配以 "library/" 开始的所有依赖
     /^antd\/.+$/,
     /^form-render\/.+$/,
