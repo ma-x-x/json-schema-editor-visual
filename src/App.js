@@ -73,17 +73,16 @@ class jsonSchema extends React.Component {
     const { isMock, showGroup, showUiSelect } = this.props;
     let otherWidth = 24 - 6 - 2 - 3- 2;
     let otherNum = 5 - (isMock ? 0 : 1) - (showGroup ? 0 : 1) - (showUiSelect ? 0 : 1);
-    debugger;
     let avaWidth = Math.floor(otherWidth / otherNum);
     return ({
       name: 6, // 固定大小
-      type: 2, // 固定大小
+      type: 3, // 固定大小
       mock: avaWidth,
       title: avaWidth + 1,
       desc: avaWidth + 1,
       group: avaWidth,
       ui: avaWidth,
-      setting: 2, // 固定大小
+      setting: 3, // 固定大小
     });
   }
 
@@ -542,7 +541,7 @@ class jsonSchema extends React.Component {
           )}
           <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style">
             <Row type="flex" justify="space-around" align="middle" style={{ background: 'rgba(0,0,0,.02)',flexWrap:'nowrap' }} className="root-header-wrapper">
-              <Col span={8} className="col-item name-item col-item-name">
+              <Col span={this.columnWidths.name} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle" style={{flexWrap:'nowrap' }}>
                   <Col span={2} className="down-style-col">
                   </Col>
@@ -599,7 +598,7 @@ class jsonSchema extends React.Component {
           )}
           <Col span={this.props.showEditor ? 18 : 24} className="wrapper object-style" style={{ marginTop: this.props.showHeader ? 0 : 8 }}>
             {!this.props.hideRoot && <Row type="flex" align="middle" >
-              <Col span={8} className="col-item name-item col-item-name">
+              <Col span={this.columnWidths.name} className="col-item name-item col-item-name">
                 <Row type="flex" justify="space-around" align="middle">
                   <Col span={2} className="down-style-col">
                     {schema.type === 'object' ? (

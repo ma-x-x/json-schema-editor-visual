@@ -182,7 +182,7 @@ class SchemaArray extends PureComponent {
       <div className="array-type">
         <Row className="array-item-type" type="flex" justify="space-around" align="middle">
           <Col
-            span={8}
+            span={this.context.columnWidths.name}
             className="col-item name-item col-item-name"
             style={this.__tagPaddingLeftStyle}
           >
@@ -464,7 +464,7 @@ class SchemaItem extends PureComponent {
       <div>
         <Row type="flex" justify="space-around" align="middle">
           <Col
-            span={8}
+            span={this.context.columnWidths.name}
             className="col-item name-item col-item-name"
             style={this.__tagPaddingLeftStyle}
           >
